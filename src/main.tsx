@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Home from "./Home";
 import FeedbackPage from "./pages/FeedbackPage";
-import Survey from "./pages/Survey";
+import GiveFeedbackPage from "./pages/GiveFeedbackPage";
 
 const router = createBrowserRouter([
   {
@@ -16,8 +16,8 @@ const router = createBrowserRouter([
     element: <FeedbackPage />,
   },
   {
-    path: "/Survey",
-    element: <Survey />,
+    path: "/GiveFeedbackPage",
+    element: <GiveFeedbackPage />,
   },
 ]);
 
