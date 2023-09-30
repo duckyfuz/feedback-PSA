@@ -18,16 +18,21 @@ const Home = () => {
   return (
     <CssVarsProvider>
       <Box
-        display="flex"
-        alignItems={"center"}
-        justifyContent={"center"}
-        color={"red"}
+        mx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 999,
+          backgroundColor: "#000000",
+        }}
       >
         <Sheet
           sx={{
             width: 300,
-            // mx: "auto",
-            // my: 0, // margin top & bottom
+            mx: "auto",
+            my: 10, // margin top & bottom
             py: 3, // padding top & bottom
             px: 2, // padding left & right
             display: "flex",
@@ -35,6 +40,7 @@ const Home = () => {
             gap: 2,
             borderRadius: "sm",
             boxShadow: "md",
+            backgroundColor: "#363232",
           }}
         >
           <Typography level="h4" component="h1">
@@ -54,6 +60,13 @@ const Home = () => {
             onClick={() => handleClick("Employer")}
           >
             Employer Access
+          </Button>
+          {/* Do Survey */}
+          <Button
+            sx={{ mt: 1 /* margin top */ }}
+            onClick={() => handleClick("Employer")}
+          >
+            Bi-Annual Satisfactory Survey
           </Button>
         </Sheet>
       </Box>

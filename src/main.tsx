@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Home from "./Home";
 import FeedbackPage from "./pages/FeedbackPage";
+import Survey from "./pages/Survey";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: "/FeedbackPage",
     element: <FeedbackPage />,
+  },
+  {
+    path: "/Survey",
+    element: <Survey />,
   },
 ]);
 
