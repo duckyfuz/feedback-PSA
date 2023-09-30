@@ -13,15 +13,26 @@ import OrderTable from "../components_old/OrderTable";
 // import OrderList from "../components_old/OrderList";
 import Header from "../components_old/Header";
 import ColorSchemeToggle from "../components_old/ColorSchemeToggle";
+import { Option, Select } from "@mui/joy";
+import { useState } from "react";
 
 export default function FeedbackView() {
+  const [char, setChar] = useState("Joshua");
+
+  const handleCharChange = (
+    event: React.SyntheticEvent | null,
+    newValue: string | null
+  ) => {
+    console.log(event);
+    // alert(`You chose "${newValue}"`);
+    // @ts-ignore
+    setChar(newValue);
+  };
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
       <Box sx={{ display: "flex", minHeight: "100dvh" }}>
         <Header />
-        {/* <FirstSidebar />
-        <SecondSidebar /> */}
         <Box
           component="main"
           className="MainContent"
@@ -70,12 +81,16 @@ export default function FeedbackView() {
               <Typography color="primary" fontWeight={500} fontSize={12}>
                 View Feedback
               </Typography>
+              <Select defaultValue="Joshua" onChange={handleCharChange}>
+                <Option value="Joshua">Joshua</Option>
+                <Option value="Joseph">Joseph</Option>
+              </Select>
             </Breadcrumbs>
             <ColorSchemeToggle
               sx={{ ml: "auto", display: { xs: "none", md: "inline-flex" } }}
             />
           </Box>
-          <OrderTable />
+          <OrderTable char={char} />
           {/* <OrderList /> */}
         </Box>
       </Box>
