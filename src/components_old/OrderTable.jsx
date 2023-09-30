@@ -5,7 +5,6 @@ import Chip from "@mui/joy/Chip";
 import Link from "@mui/joy/Link";
 import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
-import Select from "@mui/joy/Select";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
