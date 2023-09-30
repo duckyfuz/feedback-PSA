@@ -2,39 +2,23 @@ import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
-import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Link from "@mui/joy/Link";
-import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
-import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
-import Checkbox from "@mui/joy/Checkbox";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import MenuItem from "@mui/joy/MenuItem";
-import Dropdown from "@mui/joy/Dropdown";
 // icons
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import BlockIcon from "@mui/icons-material/Block";
-// import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
-// import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-// import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
-// import { fetchFeed } from "../utils/fetchFeed";
 import axios from "axios";
-import { Functions } from "@mui/icons-material";
+import { EditNote, Functions } from "@mui/icons-material";
 import OpenAI from "openai";
 import { CircularProgress, Stack } from "@mui/joy";
 
@@ -71,7 +55,6 @@ function stableSort(array, comparator) {
 
 export default function OrderTable({ char }) {
   const [order, setOrder] = React.useState("desc");
-  const [open, setOpen] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [openDetailsModal, setOpenDetailsModal] = React.useState(false);
   const [rows, setRows] = React.useState([]);
@@ -143,51 +126,15 @@ export default function OrderTable({ char }) {
     })();
   };
 
+  const handleCreateFeedback = () => {
+    // ERNEST LOOK HERE
+    console.log("create feedback");
+  };
+
   const viewHandler = (id) => {
     setDetails(rows.find((obj) => obj.id === id));
     setOpenDetailsModal(true);
   };
-
-  const renderFilters = () => (
-    <React.Fragment>
-      <FormControl size="sm">
-        <FormLabel>Status</FormLabel>
-        <Select
-          size="sm"
-          placeholder="Filter by status"
-          slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
-        >
-          <Option value="paid">Paid</Option>
-          <Option value="pending">Pending</Option>
-          <Option value="refunded">Refunded</Option>
-          <Option value="cancelled">Cancelled</Option>
-        </Select>
-      </FormControl>
-
-      <FormControl size="sm">
-        <FormLabel>Category</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="refund">Refund</Option>
-          <Option value="purchase">Purchase</Option>
-          <Option value="debit">Debit</Option>
-        </Select>
-      </FormControl>
-
-      <FormControl size="sm">
-        <FormLabel>Reviewer</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="olivia">Olivia Rhye</Option>
-          <Option value="steve">Steve Hampton</Option>
-          <Option value="ciaran">Ciaran Murray</Option>
-          <Option value="marina">Marina Macdonald</Option>
-          <Option value="charles">Charles Fulton</Option>
-          <Option value="jay">Jay Hoper</Option>
-        </Select>
-      </FormControl>
-    </React.Fragment>
-  );
 
   return (
     <React.Fragment>
@@ -205,93 +152,26 @@ export default function OrderTable({ char }) {
         <Typography level="h2">Welcome back, {char}</Typography>
         <Button
           color="primary"
-          startDecorator={<Functions />}
-          size="sm"
-          onClick={handleSummarise}
+          startDecorator={<EditNote />}
+          size="md"
+          onClick={handleCreateFeedback}
         >
-          Summarise Feedback
+          Write a feedback!
         </Button>
       </Box>
-      <Sheet
-        className="SearchAndFilters-mobile"
-        sx={{
-          display: {
-            xs: "flex",
-            sm: "none",
-          },
-          my: 1,
-          gap: 1,
-        }}
-      >
-        <Input
-          size="sm"
-          placeholder="Search"
-          startDecorator={<SearchIcon />}
-          sx={{ flexGrow: 1 }}
-        />
-        <IconButton
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          onClick={() => setOpen(true)}
-        >
-          <FilterAltIcon />
-        </IconButton>
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <ModalDialog aria-labelledby="filter-modal" layout="fullscreen">
-            <ModalClose />
-            <Typography id="filter-modal" level="h2">
-              Filters
-            </Typography>
-            <Divider sx={{ my: 2 }} />
-            <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {renderFilters()}
-              <Button color="primary" onClick={() => setOpen(false)}>
-                Submit
-              </Button>
-            </Sheet>
-          </ModalDialog>
-        </Modal>
-      </Sheet>
-      {/* <Box
-        className="SearchAndFilters-tabletUp"
-        sx={{
-          borderRadius: "sm",
-          py: 2,
-          display: {
-            xs: "none",
-            sm: "flex",
-          },
-          flexWrap: "wrap",
-          gap: 1.5,
-          "& > *": {
-            minWidth: {
-              xs: "120px",
-              md: "160px",
-            },
-          },
-        }}
-      >
-        <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for feedback</FormLabel>
-          <Input
-            size="sm"
-            placeholder="Search"
-            startDecorator={<SearchIcon />}
-          />
-        </FormControl>
-        {renderFilters()}
-      </Box> */}
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
         sx={{
           display: { xs: "none", sm: "initial" },
-          width: "100%",
           borderRadius: "sm",
           flexShrink: 1,
           overflow: "auto",
           minHeight: 0,
+          width: "100%",
+          maxHeight: "90%",
+          // alignItems: "center",
+          // justifyContent: "center",
         }}
       >
         <Table
@@ -306,13 +186,14 @@ export default function OrderTable({ char }) {
               "var(--joy-palette-background-level1)",
             "--TableCell-paddingY": "4px",
             "--TableCell-paddingX": "8px",
+            // m: 8,
           }}
         >
           <thead>
             <tr>
-              <th style={{ width: 60, padding: "12px 6px" }}> </th>
-              <th style={{ width: 120, padding: "12px 6px" }}>Review ID</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>
+              <th style={{ width: 20, padding: "12px 6px" }}> </th>
+              <th style={{ width: 40, padding: "12px 6px" }}>Review ID</th>
+              <th style={{ width: 40, padding: "12px 6px" }}>
                 <Link
                   underline="none"
                   color="primary"
@@ -332,7 +213,7 @@ export default function OrderTable({ char }) {
                 </Link>
               </th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
-              <th style={{ width: 80, padding: "12px 6px" }}> </th>
+              <th style={{ width: 40, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
@@ -491,6 +372,24 @@ export default function OrderTable({ char }) {
           </Stack>
         </Sheet>
       </Modal>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          // height: "100vh",
+          my: 2,
+        }}
+      >
+        <Button
+          color="primary"
+          startDecorator={<Functions />}
+          size="lg"
+          onClick={handleSummarise}
+        >
+          Summarise Feedback
+        </Button>
+      </Box>
     </React.Fragment>
   );
 }
