@@ -11,25 +11,21 @@ const Home = () => {
     if (param === "Employee") {
       navigate("/FeedbackPage");
     }
-
-    if (param === "Employer") {
-    }
   };
+
   return (
     <CssVarsProvider>
       <Box
         display="flex"
-        alignItems={"center"}
-        justifyContent={"center"}
-        color={"red"}
+        alignItems="center" // Center vertically
+        justifyContent="center" // Center horizontally
+        minHeight="100vh" // Set a minimum height to center vertically in the viewport
       >
         <Sheet
           sx={{
             width: 300,
-            // mx: "auto",
-            // my: 0, // margin top & bottom
-            py: 3, // padding top & bottom
-            px: 2, // padding left & right
+            py: 3,
+            px: 2,
             display: "flex",
             flexDirection: "column",
             gap: 2,
@@ -41,18 +37,12 @@ const Home = () => {
             Welcome!
           </Typography>
           <Typography level="body-sm">
-            Choose type of access to continue.
+            Choose the type of access to continue.
           </Typography>
-          <Button
-            sx={{ mt: 1 /* margin top */ }}
-            onClick={() => handleClick("Employee")}
-          >
+          <Button sx={{ mt: 1 }} onClick={() => handleClick("Employee")}>
             Employee Access
           </Button>
-          <Button
-            sx={{ mt: 1 /* margin top */ }}
-            onClick={() => handleClick("Employer")}
-          >
+          <Button sx={{ mt: 1 }} onClick={() => handleClick("Employer")}>
             Employer Access
           </Button>
         </Sheet>
