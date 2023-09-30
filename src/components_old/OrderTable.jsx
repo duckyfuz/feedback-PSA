@@ -28,14 +28,15 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import BlockIcon from "@mui/icons-material/Block";
 // import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+// import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+// import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
 // import { fetchFeed } from "../utils/fetchFeed";
 import axios from "axios";
 import { Functions } from "@mui/icons-material";
-import { sendAI } from "../utils/OpenAPI";
+import OpenAI from "openai";
+import { CircularProgress, Stack } from "@mui/joy";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -91,6 +92,7 @@ export default function OrderTable() {
   const [open, setOpen] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [rows, setRows] = React.useState([]);
+  const [response, setResponse] = React.useState("");
 
   React.useEffect(() => {
     (async () => {
@@ -113,6 +115,49 @@ export default function OrderTable() {
         });
     })();
   }, []);
+
+  const handleSummarise = () => {
+    (async () => {
+      setOpenModal(true);
+      console.log(rows);
+      const feedbackArray = [];
+
+      for (let i = 0; i < rows.length; i++) {
+        // console.log(rows[i]);
+        feedbackArray.push(rows[i].feedback);
+      }
+
+      // sendAI(feedbackArray);
+      console.log(feedbackArray);
+      console.log(import.meta.env.VITE_OPENAI_KEY);
+
+      const openai = new OpenAI({
+        apiKey: import.meta.env.VITE_OPENAI_KEY,
+        dangerouslyAllowBrowser: true,
+      });
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: `The following paragraphs are feedback for one of the employees at PSA. Pretend that you are talking to the employee directly. \n
+            After reviewing the feedback, please summarise the good and bad qualities of the employee. \n
+            Then, provide the employee with methods to improve themselves. \n
+            [${feedbackArray.join("],[")}]`,
+          },
+        ],
+        temperature: 1,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      });
+
+      console.log(response.choices[0].message.content);
+      setResponse(response.choices[0].message.content);
+    })();
+  };
 
   const renderFilters = () => (
     <React.Fragment>
@@ -173,9 +218,7 @@ export default function OrderTable() {
           color="primary"
           startDecorator={<Functions />}
           size="sm"
-          onClick={() => {
-            sendAI();
-          }}
+          onClick={handleSummarise}
         >
           Summarise Feedback
         </Button>
@@ -327,22 +370,6 @@ export default function OrderTable() {
           <tbody>
             {stableSort(rows, getComparator(order, "id")).map((row) => (
               <tr key={row.id}>
-                {/* <td style={{ textAlign: "center", width: 120 }}>
-                  <Checkbox
-                    size="sm"
-                    checked={selected.includes(row.id)}
-                    color={selected.includes(row.id) ? "primary" : undefined}
-                    onChange={(event) => {
-                      setSelected((ids) =>
-                        event.target.checked
-                          ? ids.concat(row.id)
-                          : ids.filter((itemId) => itemId !== row.id)
-                      );
-                    }}
-                    slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
-                    sx={{ verticalAlign: "text-bottom" }}
-                  />
-                </td> */}
                 <td>
                   <Typography level="body-xs">{row.id}</Typography>
                 </td>
@@ -382,53 +409,11 @@ export default function OrderTable() {
           </tbody>
         </Table>
       </Sheet>
-      <Box
-        className="Pagination-laptopUp"
-        sx={{
-          pt: 2,
-          gap: 1,
-          [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
-        >
-          Previous
-        </Button>
-
-        <Box sx={{ flex: 1 }} />
-        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-          <IconButton
-            key={page}
-            size="sm"
-            variant={Number(page) ? "outlined" : "plain"}
-            color="neutral"
-          >
-            {page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-        >
-          Next
-        </Button>
-      </Box>
       <Modal
         aria-labelledby="close-modal-title"
         open={openModal}
         onClose={() => {
+          setResponse("");
           setOpenModal(false);
         }}
         sx={{
@@ -440,21 +425,42 @@ export default function OrderTable() {
         <Sheet
           variant="outlined"
           sx={{
-            minWidth: 300,
+            width: "70%",
+            height: "70%",
             borderRadius: "md",
-            p: 3,
+            p: 4,
           }}
+          style={{ overflow: "auto" }}
         >
           <ModalClose variant="outlined" />
           <Typography
             component="h2"
-            id="close-modal-title"
-            level="h4"
+            id="modal-description"
+            level="h1"
             textColor="inherit"
-            fontWeight="lg"
+            fontWeight="md"
+            paddingBottom={2}
           >
-            Modal title
+            Summary
           </Typography>
+
+          <Stack direction="column" justifyContent="center" alignItems="center">
+            {response.length !== 0 ? (
+              <Typography
+                component="body-md"
+                id="modal-description"
+                textColor="inherit"
+                fontWeight="md"
+                sx={{ whiteSpace: "pre-line" }}
+              >
+                {response.split("\n").map((i, key) => {
+                  return <p key={key}>{i}</p>;
+                })}
+              </Typography>
+            ) : (
+              <CircularProgress size="lg" />
+            )}
+          </Stack>
         </Sheet>
       </Modal>
     </React.Fragment>
