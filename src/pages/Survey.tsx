@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { CssVarsProvider } from "@mui/joy/styles";
+// import { CssVarsProvider } from "@mui/joy/styles";
 import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
 import Slider from "@mui/joy/Slider";
 import Button from "@mui/joy/Button";
-import { Input, Box } from "@mui/joy";
+import { Input } from "@mui/joy";
 
 const Survey: React.FC = () => {
   const [openEnded1, setOpenEnded1] = useState("");
