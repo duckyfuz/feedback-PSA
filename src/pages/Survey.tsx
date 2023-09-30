@@ -4,7 +4,7 @@ import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
 import Slider from "@mui/joy/Slider";
 import Button from "@mui/joy/Button";
-import { Input } from "@mui/joy";
+import { CssVarsProvider, Input } from "@mui/joy";
 
 const Survey: React.FC = () => {
   const [openEnded1, setOpenEnded1] = useState("");

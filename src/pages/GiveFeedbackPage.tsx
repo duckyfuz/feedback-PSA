@@ -73,6 +73,7 @@ const GiveFeedbackPage: React.FC = () => {
             <Textarea
               name="feedback"
               value={formData.feedback}
+              // @ts-ignore
               onChange={handleChange}
               placeholder="Feedback"
               minRows={6}
@@ -83,6 +84,7 @@ const GiveFeedbackPage: React.FC = () => {
             <Select
               name="feedbackTo"
               value={formData.feedbackTo}
+              // @ts-ignore
               onChange={handleChange}
               placeholder="Select recipient"
               required
