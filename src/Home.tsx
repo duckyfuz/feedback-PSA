@@ -11,10 +11,8 @@ const Home = () => {
     if (param === "Employee") {
       navigate("/FeedbackPage");
     }
-
-    if (param === "Employer") {
-    }
   };
+
   return (
     <CssVarsProvider>
       <Box
@@ -47,12 +45,9 @@ const Home = () => {
             Welcome!
           </Typography>
           <Typography level="body-sm">
-            Choose type of access to continue.
+            Choose the type of access to continue.
           </Typography>
-          <Button
-            sx={{ mt: 1 /* margin top */ }}
-            onClick={() => handleClick("Employee")}
-          >
+          <Button sx={{ mt: 1 }} onClick={() => handleClick("Employee")}>
             Employee Access
           </Button>
           <Button

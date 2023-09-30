@@ -39,10 +39,13 @@ import OpenAI from "openai";
 import { CircularProgress, Stack } from "@mui/joy";
 
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
+  const dateA = new Date(a[orderBy]);
+  const dateB = new Date(b[orderBy]);
+
+  if (dateB < dateA) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (dateB > dateA) {
     return 1;
   }
   return 0;
@@ -88,11 +91,12 @@ function RowMenu() {
 
 export default function OrderTable() {
   const [order, setOrder] = React.useState("desc");
-  const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
+  const [openDetailsModal, setOpenDetailsModal] = React.useState(false);
   const [rows, setRows] = React.useState([]);
   const [response, setResponse] = React.useState("");
+  const [details, setDetails] = React.useState("");
 
   React.useEffect(() => {
     (async () => {
@@ -157,6 +161,11 @@ export default function OrderTable() {
       console.log(response.choices[0].message.content);
       setResponse(response.choices[0].message.content);
     })();
+  };
+
+  const viewHandler = (id) => {
+    setDetails(rows.find((obj) => obj.id === id));
+    setOpenDetailsModal(true);
   };
 
   const renderFilters = () => (
@@ -264,7 +273,7 @@ export default function OrderTable() {
           </ModalDialog>
         </Modal>
       </Sheet>
-      <Box
+      {/* <Box
         className="SearchAndFilters-tabletUp"
         sx={{
           borderRadius: "sm",
@@ -292,7 +301,7 @@ export default function OrderTable() {
           />
         </FormControl>
         {renderFilters()}
-      </Box>
+      </Box> */}
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -321,29 +330,9 @@ export default function OrderTable() {
         >
           <thead>
             <tr>
-              {/* <th
-                style={{ width: 48, textAlign: "center", padding: "12px 6px" }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
-                  }
-                  checked={selected.length === rows.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : []
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === rows.length
-                      ? "primary"
-                      : undefined
-                  }
-                  sx={{ verticalAlign: "text-bottom" }}
-                />
-              </th> */}
-              <th style={{ width: 120, padding: "12px 6px" }}>
+              <th style={{ width: 60, padding: "12px 6px" }}> </th>
+              <th style={{ width: 120, padding: "12px 6px" }}>Review ID</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>
                 <Link
                   underline="none"
                   color="primary"
@@ -359,17 +348,17 @@ export default function OrderTable() {
                     },
                   }}
                 >
-                  Review ID
+                  Date
                 </Link>
               </th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
-              <th style={{ width: 140, padding: "12px 6px" }}> </th>
+              <th style={{ width: 80, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
-            {stableSort(rows, getComparator(order, "id")).map((row) => (
+            {stableSort(rows, getComparator(order, "date")).map((row) => (
               <tr key={row.id}>
+                <td></td>
                 <td>
                   <Typography level="body-xs">{row.id}</Typography>
                 </td>
@@ -398,10 +387,15 @@ export default function OrderTable() {
                 </td>
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Link level="body-xs" component="button">
+                    <Button
+                      height={"90%"}
+                      onClick={() => {
+                        viewHandler(row.id);
+                      }}
+                    >
                       View
-                    </Link>
-                    <RowMenu />
+                    </Button>
+                    {/* <RowMenu /> */}
                   </Box>
                 </td>
               </tr>
@@ -454,6 +448,60 @@ export default function OrderTable() {
                 sx={{ whiteSpace: "pre-line" }}
               >
                 {response.split("\n").map((i, key) => {
+                  return <p key={key}>{i}</p>;
+                })}
+              </Typography>
+            ) : (
+              <CircularProgress size="lg" />
+            )}
+          </Stack>
+        </Sheet>
+      </Modal>
+      <Modal
+        aria-labelledby="close-modal-title"
+        open={openDetailsModal}
+        onClose={() => {
+          setDetails("");
+          setOpenDetailsModal(false);
+        }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Sheet
+          variant="outlined"
+          sx={{
+            width: "70%",
+            height: "70%",
+            borderRadius: "md",
+            p: 4,
+          }}
+          style={{ overflow: "auto" }}
+        >
+          <ModalClose variant="outlined" />
+          <Typography
+            component="h2"
+            id="modal-description"
+            level="h1"
+            textColor="inherit"
+            fontWeight="md"
+            paddingBottom={2}
+          >
+            {details.date}
+          </Typography>
+
+          <Stack direction="column" justifyContent="center" alignItems="center">
+            {details.length !== 0 ? (
+              <Typography
+                component="body-md"
+                id="modal-description"
+                textColor="inherit"
+                fontWeight="md"
+                sx={{ whiteSpace: "pre-line" }}
+              >
+                {details.feedback.split("\n").map((i, key) => {
                   return <p key={key}>{i}</p>;
                 })}
               </Typography>
