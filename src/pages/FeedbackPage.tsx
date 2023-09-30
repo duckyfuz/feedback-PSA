@@ -79,7 +79,7 @@ export default function JoyOrderDashboardTemplate() {
               <Link
                 underline="none"
                 color="neutral"
-                href="#some-link"
+                href="../"
                 aria-label="Home"
               >
                 <HomeRoundedIcon />
