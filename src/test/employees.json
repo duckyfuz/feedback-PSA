@@ -2,8 +2,8 @@
   "FED-1234": {
     "id": "FED-1234",
     "date": "Feb 3, 2023",
-    "status": "Submitted",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "O",
       "name": "Olivia Ryhe",
       "email": "olivia@email.com"
@@ -13,8 +13,8 @@
   "FED-1235": {
     "id": "FED-1235",
     "date": "Feb 5, 2023",
-    "status": "Pending",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "J",
       "name": "John Doe",
       "email": "john@email.com"
@@ -24,8 +24,8 @@
   "FED-1236": {
     "id": "FED-1236",
     "date": "Feb 7, 2023",
-    "status": "Paid",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "A",
       "name": "Alice Smith",
       "email": "alice@email.com"
@@ -35,8 +35,8 @@
   "FED-1237": {
     "id": "FED-1237",
     "date": "Feb 10, 2023",
-    "status": "Submitted",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "M",
       "name": "Michael Johnson",
       "email": "michael@email.com"
@@ -46,8 +46,8 @@
   "FED-1238": {
     "id": "FED-1238",
     "date": "Feb 15, 2023",
-    "status": "Paid",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "E",
       "name": "Emily Brown",
       "email": "emily@email.com"
@@ -57,8 +57,8 @@
   "FED-1239": {
     "id": "FED-1239",
     "date": "Feb 20, 2023",
-    "status": "Pending",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "S",
       "name": "Samuel Wilson",
       "email": "samuel@email.com"
@@ -68,8 +68,8 @@
   "FED-1240": {
     "id": "FED-1240",
     "date": "Feb 25, 2023",
-    "status": "Paid",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "L",
       "name": "Lily Davis",
       "email": "lily@email.com"
@@ -79,8 +79,8 @@
   "FED-1241": {
     "id": "FED-1241",
     "date": "Mar 2, 2023",
-    "status": "Submitted",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "C",
       "name": "Chris White",
       "email": "chris@email.com"
@@ -90,8 +90,8 @@
   "FED-1242": {
     "id": "FED-1242",
     "date": "Mar 5, 2023",
-    "status": "Pending",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "B",
       "name": "Bella Harris",
       "email": "bella@email.com"
@@ -101,8 +101,8 @@
   "FED-1243": {
     "id": "FED-1243",
     "date": "Mar 10, 2023",
-    "status": "Paid",
-    "employer": {
+    "status": "Positive",
+    "customer": {
       "initial": "R",
       "name": "Ryan Clark",
       "email": "ryan@email.com"

@@ -1,6 +1,4 @@
 import * as React from "react";
-import { ColorPaletteProp } from "@mui/joy/styles";
-import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
@@ -29,48 +27,17 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import BlockIcon from "@mui/icons-material/Block";
-import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
+// import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
-const rows = [
-  {
-    id: "INV-1234",
-    date: "Feb 3, 2023",
-    status: "Submitted",
-    customer: {
-      initial: "O",
-      name: "Olivia Ryhe",
-      email: "olivia@email.com",
-    },
-    feedback: "Amazing work",
-  },
-  {
-    id: "INV-1235",
-    date: "Feb 3, 2023",
-    status: "Removed",
-    customer: {
-      initial: "O",
-      name: "Olivia Ryhe",
-      email: "olivia@email.com",
-    },
-    feedback: "Not so good ahhh",
-  },
-  {
-    id: "INV-1236",
-    date: "Feb 3, 2023",
-    status: "Amended",
-    customer: {
-      initial: "O",
-      name: "Olivia Ryhe",
-      email: "olivia@email.com",
-    },
-    feedback: "P cool.",
-  },
-];
+// import { fetchFeed } from "../utils/fetchFeed";
+import axios from "axios";
+import { Functions } from "@mui/icons-material";
+import { sendAI } from "../utils/OpenAPI";
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -80,29 +47,14 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0;
 }
 
-type Order = "asc" | "desc";
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+function getComparator(order, orderBy) {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
-function stableSort<T>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) {
@@ -134,10 +86,33 @@ function RowMenu() {
 }
 
 export default function OrderTable() {
-  const [order, setOrder] = React.useState<Order>("desc");
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [order, setOrder] = React.useState("desc");
+  const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
+  const [rows, setRows] = React.useState([]);
+
+  React.useEffect(() => {
+    (async () => {
+      const firebaseDatabaseUrl =
+        "https://feedback-psa-default-rtdb.asia-southeast1.firebasedatabase.app/";
+      const endpointPath = "employees/Joseph"; //
+
+      await axios
+        .get(`${firebaseDatabaseUrl}${endpointPath}.json`)
+        .then((response) => {
+          // Handle the response data here
+          const data = response.data;
+          console.log(Object.values(data));
+          setRows(Object.values(data));
+          return data;
+        })
+        .catch((error) => {
+          // Handle any errors here
+          throw new Error("Error fetching data: " + error.message);
+        });
+    })();
+  }, []);
 
   const renderFilters = () => (
     <React.Fragment>
@@ -182,6 +157,29 @@ export default function OrderTable() {
 
   return (
     <React.Fragment>
+      <Box
+        sx={{
+          display: "flex",
+          my: 1,
+          gap: 1,
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "start", sm: "center" },
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography level="h2">View Feedbacks</Typography>
+        <Button
+          color="primary"
+          startDecorator={<Functions />}
+          size="sm"
+          onClick={() => {
+            sendAI();
+          }}
+        >
+          Summarise Feedback
+        </Button>
+      </Box>
       <Sheet
         className="SearchAndFilters-mobile"
         sx={{
@@ -280,7 +278,7 @@ export default function OrderTable() {
         >
           <thead>
             <tr>
-              <th
+              {/* <th
                 style={{ width: 48, textAlign: "center", padding: "12px 6px" }}
               >
                 <Checkbox
@@ -301,7 +299,7 @@ export default function OrderTable() {
                   }
                   sx={{ verticalAlign: "text-bottom" }}
                 />
-              </th>
+              </th> */}
               <th style={{ width: 120, padding: "12px 6px" }}>
                 <Link
                   underline="none"
@@ -323,14 +321,13 @@ export default function OrderTable() {
               </th>
               <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
-              <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
               <th style={{ width: 140, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
             {stableSort(rows, getComparator(order, "id")).map((row) => (
               <tr key={row.id}>
-                <td style={{ textAlign: "center", width: 120 }}>
+                {/* <td style={{ textAlign: "center", width: 120 }}>
                   <Checkbox
                     size="sm"
                     checked={selected.includes(row.id)}
@@ -345,7 +342,7 @@ export default function OrderTable() {
                     slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
                     sx={{ verticalAlign: "text-bottom" }}
                   />
-                </td>
+                </td> */}
                 <td>
                   <Typography level="body-xs">{row.id}</Typography>
                 </td>
@@ -358,34 +355,19 @@ export default function OrderTable() {
                     size="sm"
                     startDecorator={
                       {
-                        Submitted: <CheckRoundedIcon />,
-                        Amended: <AutorenewRoundedIcon />,
-                        Removed: <BlockIcon />,
+                        Positive: <CheckRoundedIcon />,
+                        Negative: <BlockIcon />,
                       }[row.status]
                     }
                     color={
                       {
-                        Paid: "success",
-                        Refunded: "neutral",
-                        Cancelled: "danger",
-                      }[row.status] as ColorPaletteProp
+                        Positive: "success",
+                        Negative: "danger",
+                      }[row.status]
                     }
                   >
                     {row.status}
                   </Chip>
-                </td>
-                <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Avatar size="sm">{row.customer.initial}</Avatar>
-                    <div>
-                      <Typography level="body-xs">
-                        {row.customer.name}
-                      </Typography>
-                      <Typography level="body-xs">
-                        {row.customer.email}
-                      </Typography>
-                    </div>
-                  </Box>
                 </td>
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
