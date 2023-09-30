@@ -96,7 +96,6 @@ export default function OrderTable({ char }) {
 
       // sendAI(feedbackArray);
       console.log(feedbackArray);
-      console.log(import.meta.env.VITE_OPENAI_KEY);
 
       const openai = new OpenAI({
         apiKey: import.meta.env.VITE_OPENAI_KEY,
