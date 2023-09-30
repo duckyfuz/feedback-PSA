@@ -17,13 +17,14 @@ const Home = () => {
     <CssVarsProvider>
       <Box
         display="flex"
-        alignItems="center" // Center vertically
-        justifyContent="center" // Center horizontally
-        minHeight="100vh" // Set a minimum height to center vertically in the viewport
+        alignItems="center"
+        justifyContent="center"
+        minHeight="100vh"
       >
         <Sheet
           sx={{
             width: 300,
+            mx: 60,
             py: 3,
             px: 2,
             display: "flex",
