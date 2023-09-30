@@ -69,27 +69,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>Rename</MenuItem>
-        <MenuItem>Move</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
-
-export default function OrderTable() {
+export default function OrderTable({ char }) {
   const [order, setOrder] = React.useState("desc");
   const [open, setOpen] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
@@ -102,7 +82,7 @@ export default function OrderTable() {
     (async () => {
       const firebaseDatabaseUrl =
         "https://feedback-psa-default-rtdb.asia-southeast1.firebasedatabase.app/";
-      const endpointPath = "employees/Joseph"; //
+      const endpointPath = `employees/${char}`; //
 
       await axios
         .get(`${firebaseDatabaseUrl}${endpointPath}.json`)
@@ -118,7 +98,7 @@ export default function OrderTable() {
           throw new Error("Error fetching data: " + error.message);
         });
     })();
-  }, []);
+  }, [char]);
 
   const handleSummarise = () => {
     (async () => {
@@ -222,7 +202,7 @@ export default function OrderTable() {
           justifyContent: "space-between",
         }}
       >
-        <Typography level="h2">View Feedbacks</Typography>
+        <Typography level="h2">Welcome back, {char}</Typography>
         <Button
           color="primary"
           startDecorator={<Functions />}
