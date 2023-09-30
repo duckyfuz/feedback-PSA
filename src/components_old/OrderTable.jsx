@@ -2,13 +2,10 @@ import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
 import Link from "@mui/joy/Link";
 import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
@@ -91,12 +88,13 @@ export default function OrderTable({ char }) {
 
       for (let i = 0; i < rows.length; i++) {
         // console.log(rows[i]);
-        feedbackArray.push(rows[i].feedback);
+        feedbackArray.push(rows[i].date + ": " + rows[i].feedback);
       }
 
       // sendAI(feedbackArray);
-      // console.log(feedbackArray);
+      console.log(feedbackArray);
 
+      // TODO: HIDE THE ENV KEY WTF
       const openai = new OpenAI({
         apiKey: import.meta.env.VITE_OPENAI_KEY,
         dangerouslyAllowBrowser: true,
@@ -107,9 +105,9 @@ export default function OrderTable({ char }) {
         messages: [
           {
             role: "user",
-            content: `The following paragraphs are feedback for one of the employees at PSA. Pretend that you are talking to the employee directly. \n
-            After reviewing the feedback, please summarise the good and bad qualities of the employee. \n
-            Then, provide the employee with methods to improve themselves. \n
+            content: `You are a LLM designed to review and summarise feedback. Act as if you were taking directly to the employee.\n
+            Based on the feedback and time given, judge the employee's progress. Tell them about the area they have improved in across time as well as the areas in which they remained lacking in. For the areas in which they are lacking, provide them with specific ways to improve.\n
+            Include a few fictatious courses the employee can attend to work on these skills. Bold the course names with html <b> tags. Encourage the user to ask their superiors for the chance to attend these courses.\n
             [${feedbackArray.join("],[")}]`,
           },
         ],
@@ -120,7 +118,7 @@ export default function OrderTable({ char }) {
         presence_penalty: 0,
       });
 
-      console.log(response.choices[0].message.content);
+      console.log(response);
       setResponse(response.choices[0].message.content);
     })();
   };
@@ -255,7 +253,6 @@ export default function OrderTable({ char }) {
                     >
                       View
                     </Button>
-                    {/* <RowMenu /> */}
                   </Box>
                 </td>
               </tr>
@@ -280,7 +277,8 @@ export default function OrderTable({ char }) {
           variant="outlined"
           sx={{
             width: "70%",
-            height: "70%",
+            maxHeight: "100%",
+            minHeight: "70%",
             borderRadius: "md",
             p: 4,
           }}
@@ -292,19 +290,19 @@ export default function OrderTable({ char }) {
             alignItems="center"
             height="100%"
           >
+            <Typography
+              component="h2"
+              id="modal-description"
+              level="h1"
+              textColor="inherit"
+              fontWeight="md"
+              paddingBottom={2}
+            >
+              Summary (Previous Year)
+            </Typography>
             <ModalClose variant="outlined" />
             {response.length !== 0 ? (
               <>
-                <Typography
-                  component="h2"
-                  id="modal-description"
-                  level="h1"
-                  textColor="inherit"
-                  fontWeight="md"
-                  paddingBottom={2}
-                >
-                  Summary (Previous Year)
-                </Typography>
                 <Typography
                   component="body-md"
                   id="modal-description"
@@ -319,14 +317,14 @@ export default function OrderTable({ char }) {
               </>
             ) : (
               <Stack alignItems="center">
-                <CircularProgress size="md" />
+                <CircularProgress sx={{ my: 3 }} size="md" />
                 <Typography
                   // component="h2"
                   id="modal-description"
                   level="body-md"
                   textColor="inherit"
                   fontWeight="md"
-                  paddingTop={3}
+                  paddingTop={1}
                 >
                   Generating Summary...
                 </Typography>
@@ -380,7 +378,17 @@ export default function OrderTable({ char }) {
                 sx={{ whiteSpace: "pre-line" }}
               >
                 {details.feedback.split("\n").map((i, key) => {
-                  return <p key={key}>{i}</p>;
+                  return (
+                    <React.Fragment key={key}>
+                      {i.split("<b>").map((text, index) => {
+                        if (index % 2 === 0) {
+                          return <p key={index}>{text}</p>;
+                        } else {
+                          return <b key={index}>{text}</b>;
+                        }
+                      })}
+                    </React.Fragment>
+                  );
                 })}
               </Typography>
             ) : (
