@@ -16,21 +16,22 @@ import OrderTable from "../components_old/OrderTable";
 import OrderList from "../components_old/OrderList";
 import Header from "../components_old/Header";
 import ColorSchemeToggle from "../components_old/ColorSchemeToggle";
+import { sendAI } from "../utils/OpenAPI";
 
-const useEnhancedEffect =
-  typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
+// const useEnhancedEffect =
+//   typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
-export default function JoyOrderDashboardTemplate() {
-  const status = useScript(`https://unpkg.com/feather-icons`);
+export default function FeedbackView() {
+  // const status = useScript(`https://unpkg.com/feather-icons`);
 
-  useEnhancedEffect(() => {
-    // Feather icon setup: https://github.com/feathericons/feather#4-replace
-    // @ts-ignore
-    if (typeof feather !== "undefined") {
-      // @ts-ignore
-      feather.replace();
-    }
-  }, [status]);
+  // useEnhancedEffect(() => {
+  //   // Feather icon setup: https://github.com/feathericons/feather#4-replace
+  //   // @ts-ignore
+  //   if (typeof feather !== "undefined") {
+  //     // @ts-ignore
+  //     feather.replace();
+  //   }
+  // }, [status]);
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -112,11 +113,14 @@ export default function JoyOrderDashboardTemplate() {
               justifyContent: "space-between",
             }}
           >
-            <Typography level="h2">Orders</Typography>
+            <Typography level="h2">View Feedbacks</Typography>
             <Button
               color="primary"
               startDecorator={<DownloadRoundedIcon />}
               size="sm"
+              onClick={() => {
+                sendAI();
+              }}
             >
               Download PDF
             </Button>

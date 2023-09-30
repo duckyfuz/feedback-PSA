@@ -1,8 +1,7 @@
+import FeedbackView from "./pages/FeedbackPage";
 
 const App = () => {
-  return (
-    <div>App</div>
-  )
-}
+  return <FeedbackView />;
+};
 
-export default App
+export default App;
