@@ -287,33 +287,51 @@ export default function OrderTable({ char }) {
           }}
           style={{ overflow: "auto" }}
         >
-          <ModalClose variant="outlined" />
-          <Typography
-            component="h2"
-            id="modal-description"
-            level="h1"
-            textColor="inherit"
-            fontWeight="md"
-            paddingBottom={2}
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
           >
-            Summary
-          </Typography>
-
-          <Stack direction="column" justifyContent="center" alignItems="center">
+            <ModalClose variant="outlined" />
             {response.length !== 0 ? (
-              <Typography
-                component="body-md"
-                id="modal-description"
-                textColor="inherit"
-                fontWeight="md"
-                sx={{ whiteSpace: "pre-line" }}
-              >
-                {response.split("\n").map((i, key) => {
-                  return <p key={key}>{i}</p>;
-                })}
-              </Typography>
+              <>
+                <Typography
+                  component="h2"
+                  id="modal-description"
+                  level="h1"
+                  textColor="inherit"
+                  fontWeight="md"
+                  paddingBottom={2}
+                >
+                  Summary (Previous Year)
+                </Typography>
+                <Typography
+                  component="body-md"
+                  id="modal-description"
+                  textColor="inherit"
+                  fontWeight="md"
+                  sx={{ whiteSpace: "pre-line" }}
+                >
+                  {response.split("\n").map((i, key) => {
+                    return <p key={key}>{i}</p>;
+                  })}
+                </Typography>
+              </>
             ) : (
-              <CircularProgress size="lg" />
+              <Stack alignItems="center">
+                <CircularProgress size="md" />
+                <Typography
+                  // component="h2"
+                  id="modal-description"
+                  level="body-md"
+                  textColor="inherit"
+                  fontWeight="md"
+                  paddingTop={3}
+                >
+                  Generating Summary...
+                </Typography>
+              </Stack>
             )}
           </Stack>
         </Sheet>
