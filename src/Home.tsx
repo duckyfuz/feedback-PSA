@@ -4,7 +4,7 @@ import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
 import { useNavigate } from "react-router-dom";
 import { Box, Modal } from "@mui/joy";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import Survey from "./pages/Survey";
 

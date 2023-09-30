@@ -13,7 +13,7 @@ import OrderTable from "../components_old/OrderTable";
 // import OrderList from "../components_old/OrderList";
 import Header from "../components_old/Header";
 import ColorSchemeToggle from "../components_old/ColorSchemeToggle";
-import { Dropdown, Menu, MenuButton, MenuItem, Option, Select } from "@mui/joy";
+import { Option, Select } from "@mui/joy";
 import { useState } from "react";
 
 export default function FeedbackView() {
@@ -25,6 +25,7 @@ export default function FeedbackView() {
   ) => {
     console.log(event);
     // alert(`You chose "${newValue}"`);
+    // @ts-ignore
     setChar(newValue);
   };
   return (
