@@ -33,6 +33,7 @@ const Survey: React.FC = () => {
     <Sheet
       sx={{
         width: 400,
+        height: 500,
         my: 4, // margin top & bottom
         py: 3, // padding top & bottom
         px: 2, // padding left & right
@@ -42,6 +43,7 @@ const Survey: React.FC = () => {
         borderRadius: "sm",
         boxShadow: "md",
         mx: "auto",
+        overflow: "auto",
       }}
     >
       <Typography level="h4" component="h1">

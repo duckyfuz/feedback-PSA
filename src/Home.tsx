@@ -3,9 +3,13 @@ import { CssVarsProvider } from "@mui/joy/styles";
 import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
 import { useNavigate } from "react-router-dom";
-import { Box } from "@mui/joy";
+import { Box, Modal } from "@mui/joy";
+import React, { useState } from "react";
+
+import Survey from "./pages/Survey";
 
 const Home = () => {
+  const [openDetailsModal, setOpenDetailsModal] = useState(false);
   const navigate = useNavigate();
   const handleClick = (param: string) => {
     if (param === "Employee") {
@@ -59,10 +63,24 @@ const Home = () => {
           {/* Do Survey */}
           <Button
             sx={{ mt: 1 /* margin top */ }}
-            onClick={() => handleClick("Employer")}
+            onClick={() => setOpenDetailsModal(true)}
           >
             Bi-Annual Satisfactory Survey
           </Button>
+          <Modal
+            aria-labelledby="close-modal-title"
+            open={openDetailsModal}
+            onClose={() => {
+              setOpenDetailsModal(false);
+            }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Survey />
+          </Modal>
         </Sheet>
       </Box>
     </CssVarsProvider>
