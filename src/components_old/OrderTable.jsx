@@ -330,7 +330,7 @@ export default function OrderTable() {
         >
           <thead>
             <tr>
-              <th style={{ width: 140, padding: "12px 6px" }}> </th>
+              <th style={{ width: 60, padding: "12px 6px" }}> </th>
               <th style={{ width: 120, padding: "12px 6px" }}>Review ID</th>
               <th style={{ width: 140, padding: "12px 6px" }}>
                 <Link
@@ -352,7 +352,7 @@ export default function OrderTable() {
                 </Link>
               </th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
-              <th style={{ width: 140, padding: "12px 6px" }}> </th>
+              <th style={{ width: 80, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
