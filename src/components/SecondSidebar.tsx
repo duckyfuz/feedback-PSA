@@ -9,14 +9,9 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListItemButton from "@mui/joy/ListItemButton";
 // icons
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
-import InsertChartIcon from "@mui/icons-material/InsertChart";
 import StarsIcon from "@mui/icons-material/Stars";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
-import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
-import CreditCardRoundedIcon from "@mui/icons-material/CreditCardRounded";
-import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
 
 import { closeSidebar } from "../utils";
 
@@ -78,27 +73,11 @@ export default function SecondSidebar() {
             Dashboard
           </ListSubheader>
           <ListItem>
-            <ListItemButton onClick={() => closeSidebar()}>
+            <ListItemButton selected>
               <ListItemDecorator>
                 <BubbleChartIcon />
               </ListItemDecorator>
               <ListItemContent>Overview</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton onClick={() => closeSidebar()}>
-              <ListItemDecorator>
-                <InsertChartIcon />
-              </ListItemDecorator>
-              <ListItemContent>Analytics</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton selected>
-              <ListItemDecorator>
-                <ShoppingCartIcon />
-              </ListItemDecorator>
-              <ListItemContent>Orders</ListItemContent>
             </ListItemButton>
           </ListItem>
           <ListItem>
@@ -126,30 +105,6 @@ export default function SecondSidebar() {
                 <PeopleRoundedIcon />
               </ListItemDecorator>
               <ListItemContent>Groups</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton onClick={() => closeSidebar()}>
-              <ListItemDecorator>
-                <BadgeRoundedIcon />
-              </ListItemDecorator>
-              <ListItemContent>Authentication</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton onClick={() => closeSidebar()}>
-              <ListItemDecorator>
-                <CreditCardRoundedIcon />
-              </ListItemDecorator>
-              <ListItemContent>Billing</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton onClick={() => closeSidebar()}>
-              <ListItemDecorator>
-                <AnalyticsRoundedIcon />
-              </ListItemDecorator>
-              <ListItemContent>Analytics</ListItemContent>
             </ListItemButton>
           </ListItem>
         </List>

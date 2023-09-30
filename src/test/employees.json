@@ -1,0 +1,112 @@
+{
+  "FED-1234": {
+    "id": "FED-1234",
+    "date": "Feb 3, 2023",
+    "status": "Submitted",
+    "employer": {
+      "initial": "O",
+      "name": "Olivia Ryhe",
+      "email": "olivia@email.com"
+    },
+    "feedback": "Joshua, I want to commend you for the exceptional work you've been doing. Your dedication to our projects has been outstanding. However, I've noticed that there is room for improvement in your communication with team members. Your ability to take initiative and solve complex problems has had a significant impact on our success. Keep up the great work, and I look forward to seeing your continued contributions."
+  },
+  "FED-1235": {
+    "id": "FED-1235",
+    "date": "Feb 5, 2023",
+    "status": "Pending",
+    "employer": {
+      "initial": "J",
+      "name": "John Doe",
+      "email": "john@email.com"
+    },
+    "feedback": "Joshua, your performance has been nothing short of remarkable. You consistently deliver high-quality work, and your innovative ideas have breathed new life into our projects. However, I'd like to see more proactive involvement in team discussions. Your contributions are greatly appreciated, and I have no doubt that you will continue to excel in your role."
+  },
+  "FED-1236": {
+    "id": "FED-1236",
+    "date": "Feb 7, 2023",
+    "status": "Paid",
+    "employer": {
+      "initial": "A",
+      "name": "Alice Smith",
+      "email": "alice@email.com"
+    },
+    "feedback": "Joshua, I want to express my heartfelt gratitude for your excellent service. Your professionalism and dedication to our clients are commendable. However, there's an opportunity for improvement in time management. Your ability to lead and inspire your team is truly remarkable. Thank you for your unwavering commitment to our organization."
+  },
+  "FED-1237": {
+    "id": "FED-1237",
+    "date": "Feb 10, 2023",
+    "status": "Submitted",
+    "employer": {
+      "initial": "M",
+      "name": "Michael Johnson",
+      "email": "michael@email.com"
+    },
+    "feedback": "Joshua, your work continues to impress me. Your attention to detail and your knack for meeting tight deadlines are exceptional. However, I'd like to see more proactive problem-solving when issues arise. Your creative problem-solving skills have been instrumental to our projects' success. Keep pushing the boundaries of excellence."
+  },
+  "FED-1238": {
+    "id": "FED-1238",
+    "date": "Feb 15, 2023",
+    "status": "Paid",
+    "employer": {
+      "initial": "E",
+      "name": "Emily Brown",
+      "email": "emily@email.com"
+    },
+    "feedback": "Joshua, your performance has been nothing short of outstanding. Your attention to detail and your unwavering dedication to our projects are truly impressive. However, there's room for growth in delegation skills. Your ability to adapt to new challenges is a testament to your professionalism. Thank you for consistently going above and beyond."
+  },
+  "FED-1239": {
+    "id": "FED-1239",
+    "date": "Feb 20, 2023",
+    "status": "Pending",
+    "employer": {
+      "initial": "S",
+      "name": "Samuel Wilson",
+      "email": "samuel@email.com"
+    },
+    "feedback": "Joshua, I want to commend you for the exceptional service you provide. Your commitment to our clients is evident in every interaction. However, there's an opportunity to enhance your leadership skills. Your positive attitude and willingness to tackle challenges head-on make you an invaluable member of our team. Keep up the excellent work."
+  },
+  "FED-1240": {
+    "id": "FED-1240",
+    "date": "Feb 25, 2023",
+    "status": "Paid",
+    "employer": {
+      "initial": "L",
+      "name": "Lily Davis",
+      "email": "lily@email.com"
+    },
+    "feedback": "Joshua, I'm truly impressed with your work. Your dedication and ability to handle challenging tasks are commendable. However, I'd like to see more active participation in brainstorming sessions. Your problem-solving skills and innovative thinking have set a high standard for our team. Continue to strive for excellence."
+  },
+  "FED-1241": {
+    "id": "FED-1241",
+    "date": "Mar 2, 2023",
+    "status": "Submitted",
+    "employer": {
+      "initial": "C",
+      "name": "Chris White",
+      "email": "chris@email.com"
+    },
+    "feedback": "Joshua, your work has been nothing short of excellent. Your attention to detail and your ability to tackle complex problems have made a significant impact on our projects. However, I'd like to see more assertiveness in team meetings. Your dedication to achieving outstanding results is truly commendable."
+  },
+  "FED-1242": {
+    "id": "FED-1242",
+    "date": "Mar 5, 2023",
+    "status": "Pending",
+    "employer": {
+      "initial": "B",
+      "name": "Bella Harris",
+      "email": "bella@email.com"
+    },
+    "feedback": "Joshua, your performance has been outstanding. Your dedication to your tasks and your positive attitude are greatly valued. However, there's room for improvement in time management. Your ability to collaborate and communicate effectively has made a positive impact on our team dynamics. Keep up the good work."
+  },
+  "FED-1243": {
+    "id": "FED-1243",
+    "date": "Mar 10, 2023",
+    "status": "Paid",
+    "employer": {
+      "initial": "R",
+      "name": "Ryan Clark",
+      "email": "ryan@email.com"
+    },
+    "feedback": "Joshua, I want to express my deepest appreciation for your exceptional service. Your dedication, problem-solving skills, and leadership have been instrumental to our success. However, there's an opportunity to further develop your mentoring skills. Your ability to inspire and motivate your team is truly remarkable. Keep pushing the boundaries of what's possible."
+  }
+}

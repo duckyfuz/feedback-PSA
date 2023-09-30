@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
 import { ColorPaletteProp } from "@mui/joy/styles";
 import Avatar from "@mui/joy/Avatar";
@@ -39,182 +38,35 @@ const rows = [
   {
     id: "INV-1234",
     date: "Feb 3, 2023",
-    status: "Refunded",
+    status: "Submitted",
     customer: {
       initial: "O",
       name: "Olivia Ryhe",
       email: "olivia@email.com",
     },
+    feedback: "Amazing work",
   },
   {
-    id: "INV-1233",
+    id: "INV-1235",
     date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "S",
-      name: "Steve Hampton",
-      email: "steve.hamp@email.com",
-    },
-  },
-  {
-    id: "INV-1232",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "C",
-      name: "Ciaran Murray",
-      email: "ciaran.murray@email.com",
-    },
-  },
-  {
-    id: "INV-1231",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "M",
-      name: "Maria Macdonald",
-      email: "maria.mc@email.com",
-    },
-  },
-  {
-    id: "INV-1230",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "C",
-      name: "Charles Fulton",
-      email: "fulton@email.com",
-    },
-  },
-  {
-    id: "INV-1229",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "J",
-      name: "Jay Hooper",
-      email: "hooper@email.com",
-    },
-  },
-  {
-    id: "INV-1228",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "K",
-      name: "Krystal Stevens",
-      email: "k.stevens@email.com",
-    },
-  },
-  {
-    id: "INV-1227",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "S",
-      name: "Sachin Flynn",
-      email: "s.flyn@email.com",
-    },
-  },
-  {
-    id: "INV-1226",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "B",
-      name: "Bradley Rosales",
-      email: "brad123@email.com",
-    },
-  },
-  {
-    id: "INV-1234",
-    date: "Feb 3, 2023",
-    status: "Paid",
+    status: "Removed",
     customer: {
       initial: "O",
       name: "Olivia Ryhe",
       email: "olivia@email.com",
     },
+    feedback: "Not so good ahhh",
   },
   {
-    id: "INV-1233",
+    id: "INV-1236",
     date: "Feb 3, 2023",
-    status: "Cancelled",
+    status: "Amended",
     customer: {
-      initial: "S",
-      name: "Steve Hampton",
-      email: "steve.hamp@email.com",
+      initial: "O",
+      name: "Olivia Ryhe",
+      email: "olivia@email.com",
     },
-  },
-  {
-    id: "INV-1232",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "C",
-      name: "Ciaran Murray",
-      email: "ciaran.murray@email.com",
-    },
-  },
-  {
-    id: "INV-1231",
-    date: "Feb 3, 2023",
-    status: "Refunded",
-    customer: {
-      initial: "M",
-      name: "Maria Macdonald",
-      email: "maria.mc@email.com",
-    },
-  },
-  {
-    id: "INV-1230",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "C",
-      name: "Charles Fulton",
-      email: "fulton@email.com",
-    },
-  },
-  {
-    id: "INV-1229",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "J",
-      name: "Jay Hooper",
-      email: "hooper@email.com",
-    },
-  },
-  {
-    id: "INV-1228",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "K",
-      name: "Krystal Stevens",
-      email: "k.stevens@email.com",
-    },
-  },
-  {
-    id: "INV-1227",
-    date: "Feb 3, 2023",
-    status: "Paid",
-    customer: {
-      initial: "S",
-      name: "Sachin Flynn",
-      email: "s.flyn@email.com",
-    },
-  },
-  {
-    id: "INV-1226",
-    date: "Feb 3, 2023",
-    status: "Cancelled",
-    customer: {
-      initial: "B",
-      name: "Bradley Rosales",
-      email: "brad123@email.com",
-    },
+    feedback: "P cool.",
   },
 ];
 
@@ -285,6 +137,8 @@ export default function OrderTable() {
   const [order, setOrder] = React.useState<Order>("desc");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm">
@@ -312,7 +166,7 @@ export default function OrderTable() {
       </FormControl>
 
       <FormControl size="sm">
-        <FormLabel>Customer</FormLabel>
+        <FormLabel>Reviewer</FormLabel>
         <Select size="sm" placeholder="All">
           <Option value="all">All</Option>
           <Option value="olivia">Olivia Rhye</Option>
@@ -325,6 +179,7 @@ export default function OrderTable() {
       </FormControl>
     </React.Fragment>
   );
+
   return (
     <React.Fragment>
       <Sheet
@@ -388,7 +243,7 @@ export default function OrderTable() {
         }}
       >
         <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for order</FormLabel>
+          <FormLabel>Search for feedback</FormLabel>
           <Input
             size="sm"
             placeholder="Search"
@@ -463,7 +318,7 @@ export default function OrderTable() {
                     },
                   }}
                 >
-                  Invoice
+                  Review ID
                 </Link>
               </th>
               <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
@@ -503,9 +358,9 @@ export default function OrderTable() {
                     size="sm"
                     startDecorator={
                       {
-                        Paid: <CheckRoundedIcon />,
-                        Refunded: <AutorenewRoundedIcon />,
-                        Cancelled: <BlockIcon />,
+                        Submitted: <CheckRoundedIcon />,
+                        Amended: <AutorenewRoundedIcon />,
+                        Removed: <BlockIcon />,
                       }[row.status]
                     }
                     color={
@@ -535,7 +390,7 @@ export default function OrderTable() {
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Link level="body-xs" component="button">
-                      Download
+                      View
                     </Link>
                     <RowMenu />
                   </Box>
@@ -588,6 +443,38 @@ export default function OrderTable() {
           Next
         </Button>
       </Box>
+      <Modal
+        aria-labelledby="close-modal-title"
+        open={openModal}
+        onClose={() => {
+          setOpenModal(false);
+        }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Sheet
+          variant="outlined"
+          sx={{
+            minWidth: 300,
+            borderRadius: "md",
+            p: 3,
+          }}
+        >
+          <ModalClose variant="outlined" />
+          <Typography
+            component="h2"
+            id="close-modal-title"
+            level="h4"
+            textColor="inherit"
+            fontWeight="lg"
+          >
+            Modal title
+          </Typography>
+        </Sheet>
+      </Modal>
     </React.Fragment>
   );
 }
