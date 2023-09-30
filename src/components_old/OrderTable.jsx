@@ -86,7 +86,7 @@ export default function OrderTable({ char }) {
   const handleSummarise = () => {
     (async () => {
       setOpenModal(true);
-      console.log(rows);
+      // console.log(rows);
       const feedbackArray = [];
 
       for (let i = 0; i < rows.length; i++) {
@@ -95,7 +95,7 @@ export default function OrderTable({ char }) {
       }
 
       // sendAI(feedbackArray);
-      console.log(feedbackArray);
+      // console.log(feedbackArray);
 
       const openai = new OpenAI({
         apiKey: import.meta.env.VITE_OPENAI_KEY,
