@@ -330,6 +330,7 @@ export default function OrderTable() {
         >
           <thead>
             <tr>
+              <th style={{ width: 140, padding: "12px 6px" }}> </th>
               <th style={{ width: 120, padding: "12px 6px" }}>Review ID</th>
               <th style={{ width: 140, padding: "12px 6px" }}>
                 <Link
@@ -357,6 +358,7 @@ export default function OrderTable() {
           <tbody>
             {stableSort(rows, getComparator(order, "date")).map((row) => (
               <tr key={row.id}>
+                <td></td>
                 <td>
                   <Typography level="body-xs">{row.id}</Typography>
                 </td>
