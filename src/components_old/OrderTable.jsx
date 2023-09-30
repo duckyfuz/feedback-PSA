@@ -1,5 +1,4 @@
 import * as React from "react";
-import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
@@ -35,6 +34,8 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
 // import { fetchFeed } from "../utils/fetchFeed";
 import axios from "axios";
+import { Functions } from "@mui/icons-material";
+import { sendAI } from "../utils/OpenAPI";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -156,6 +157,29 @@ export default function OrderTable() {
 
   return (
     <React.Fragment>
+      <Box
+        sx={{
+          display: "flex",
+          my: 1,
+          gap: 1,
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "start", sm: "center" },
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography level="h2">View Feedbacks</Typography>
+        <Button
+          color="primary"
+          startDecorator={<Functions />}
+          size="sm"
+          onClick={() => {
+            sendAI();
+          }}
+        >
+          Summarise Feedback
+        </Button>
+      </Box>
       <Sheet
         className="SearchAndFilters-mobile"
         sx={{
@@ -254,7 +278,7 @@ export default function OrderTable() {
         >
           <thead>
             <tr>
-              <th
+              {/* <th
                 style={{ width: 48, textAlign: "center", padding: "12px 6px" }}
               >
                 <Checkbox
@@ -275,7 +299,7 @@ export default function OrderTable() {
                   }
                   sx={{ verticalAlign: "text-bottom" }}
                 />
-              </th>
+              </th> */}
               <th style={{ width: 120, padding: "12px 6px" }}>
                 <Link
                   underline="none"
@@ -297,14 +321,13 @@ export default function OrderTable() {
               </th>
               <th style={{ width: 140, padding: "12px 6px" }}>Date</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
-              <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
               <th style={{ width: 140, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
             {stableSort(rows, getComparator(order, "id")).map((row) => (
               <tr key={row.id}>
-                <td style={{ textAlign: "center", width: 120 }}>
+                {/* <td style={{ textAlign: "center", width: 120 }}>
                   <Checkbox
                     size="sm"
                     checked={selected.includes(row.id)}
@@ -319,7 +342,7 @@ export default function OrderTable() {
                     slotProps={{ checkbox: { sx: { textAlign: "left" } } }}
                     sx={{ verticalAlign: "text-bottom" }}
                   />
-                </td>
+                </td> */}
                 <td>
                   <Typography level="body-xs">{row.id}</Typography>
                 </td>
@@ -345,8 +368,6 @@ export default function OrderTable() {
                   >
                     {row.status}
                   </Chip>
-                </td>
-                <td>
                 </td>
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
