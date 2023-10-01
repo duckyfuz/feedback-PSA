@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { CssVarsProvider, Sheet, Input, Button, Textarea } from "@mui/joy";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
 
 const GiveFeedbackPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -12,11 +10,18 @@ const GiveFeedbackPage: React.FC = () => {
     feedbackTo: "",
   });
 
+  //potentially make this line dynamic in the future??
+  const recipients = ["Joseph", "Joshua", "Katie", "Moses", "Ruby"];
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (e && e.target) {
+      console.log(e.target);
+      const { name, value } = e.target;
+      console.log(name, value);
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -48,27 +53,29 @@ const GiveFeedbackPage: React.FC = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Name"
+              placeholder="Your Name"
+              autoComplete="off"
               required
-              sx={{ my: 2 }}
+              sx={{ mb: 2 }}
             />
             <Input
               type="text"
               name="initial"
               value={formData.initial}
               onChange={handleChange}
-              placeholder="Initial"
+              placeholder="Your Initial"
+              autoComplete="off"
               required
-              sx={{ my: 2 }}
+              sx={{ mb: 2 }}
             />
             <Input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email"
+              placeholder="Your Email"
               required
-              sx={{ my: 2 }}
+              sx={{ mb: 2 }}
             />
             <Textarea
               name="feedback"
@@ -76,24 +83,33 @@ const GiveFeedbackPage: React.FC = () => {
               // @ts-ignore
               onChange={handleChange}
               placeholder="Feedback"
-              minRows={6}
-              maxRows={6}
+              minRows={4}
+              maxRows={4}
               required
-              sx={{ my: 2 }}
+              sx={{ mb: 2 }}
             />
-            <Select
+            <select
               name="feedbackTo"
-              value={formData.feedbackTo}
+              defaultValue={recipients[0]}
+              placeholder="Select Recipient"
               // @ts-ignore
               onChange={handleChange}
-              placeholder="Select recipient"
               required
-              sx={{ my: 2 }}
+              style={{
+                marginBottom: 20,
+                width: 200,
+                height: 30,
+                display: "block",
+              }}
             >
-              <Option value="recipient1">Recipient 1</Option>
-              <Option value="recipient2">Recipient 2</Option>
-              <Option value="recipient3">Recipient 3</Option>
-            </Select>
+              {recipients.map((recipient) => {
+                return (
+                  <option value={recipient} key={recipient}>
+                    {recipient}
+                  </option>
+                );
+              })}
+            </select>
             <Button type="submit">Submit</Button>
           </form>
         </Sheet>
