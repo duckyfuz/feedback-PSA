@@ -1,33 +1,47 @@
+import { Button, Typography } from "@mui/joy";
 import Table from "@mui/joy/Table";
-import React, { useEffect, useState } from "react";
 
-interface ChildProps {
-  personalityData: { [name: string]: { rank: number; key_trait: string } };
-}
-
-const TopEmployeeTable: React.FC<ChildProps> = ({ personalityData }) => {
-  const [data, setData] = useState(personalityData);
-  useEffect(() => {
-    setData(personalityData);
-  }, [personalityData]);
-
+const TopEmployeeTable = ({ personalityData, viewHandler }: any) => {
+  const employeeData = personalityData.ranking;
+  // console.log(employeeData);
   return (
     <Table aria-label="basic table">
       <thead>
         <tr>
-          <th style={{ width: "15%" }}>Rank</th>
-          <th style={{ width: "50%" }}>Name </th>
-          <th style={{ width: "35%" }}>Key Trait</th>
+          <th style={{ width: "10%" }}>Rank</th>
+          <th style={{ width: "15%" }}>Employee</th>
+          <th style={{ width: "75%" }}>Employee Report</th>
+          <th style={{ width: "10%" }}></th>
         </tr>
       </thead>
       <tbody>
-        {Object.entries(data).map(([name, data]) => (
-          <tr key={name}>
-            <td>{data.rank}</td>
-            <td>{name}</td>
-            <td>{data.key_trait || "N/A"}</td>
-          </tr>
-        ))}
+        {employeeData &&
+          employeeData.map((entry: any, index: any) => {
+            const employeeName = entry[0];
+            const feedbackText = entry[1];
+
+            return (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{employeeName}</td>
+                <td>
+                  <Typography noWrap level="body-xs">
+                    {feedbackText}
+                  </Typography>
+                </td>
+                <td>
+                  <Button
+                    onClick={() => {
+                      viewHandler(index);
+                    }}
+                  >
+                    View
+                  </Button>
+                </td>
+                {/* <td>{feedbackText}</td> */}
+              </tr>
+            );
+          })}
       </tbody>
     </Table>
   );

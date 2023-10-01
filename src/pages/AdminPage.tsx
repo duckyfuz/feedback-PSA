@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import OpenAI from "openai";
+import Modal from "@mui/joy/Modal";
 
 import {
   CssVarsProvider,
@@ -11,6 +12,9 @@ import {
   Typography,
   Sheet,
   Button,
+  Stack,
+  CircularProgress,
+  ModalClose,
 } from "@mui/joy";
 import ColorSchemeToggle from "../components_old/ColorSchemeToggle";
 import Header from "../components_old/Header";
@@ -25,9 +29,14 @@ import TopEmployeeTable from "../adminPageComponents/TopEmployeeTable";
 const AdminPage = () => {
   const [firebaseData, setFirebaseData] = React.useState({});
   const [personalityData, setPersonalityData] = React.useState({});
+  const [analysisLoading, setAnalysisLoading] = React.useState(false);
+  const [selectedEmployee, setSelectedEmployee] = React.useState([]);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [toggle, setToggle] = React.useState(false);
 
   React.useEffect(() => {
     (async () => {
+      setAnalysisLoading(true);
       const firebaseDatabaseUrl =
         "https://feedback-psa-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
@@ -36,110 +45,113 @@ const AdminPage = () => {
         .then((response) => {
           // Handle the response data here
           const data = response.data;
-          // @ts-ignore
-          setFirebaseData(Object.values(data)[0]);
-          // @ts-ignore
-          setPersonalityData(Object.values(data)[1]);
-          //   setRows(Object.values(data));
+          setFirebaseData(data.employees);
+          setPersonalityData(data.personality);
+          console.log(data.personality);
           return data;
         })
         .catch((error) => {
           // Handle any errors here
           throw new Error("Error fetching data: " + error.message);
         });
+      setAnalysisLoading(false);
     })();
-  }, []);
+  }, [toggle]);
 
-  //Function that assesses the characteristic of an individual based on his/her feedback
+  function extractFeedback(data: any) {
+    const result = {};
+
+    for (const person in data) {
+      // @ts-ignore
+      result[person] = Object.values(data[person]).map(
+        // @ts-ignore
+        (feedbackObj) => feedbackObj.feedback
+      );
+    }
+
+    return result;
+  }
+
+  // Function that assesses the characteristic of an individual based on his/her feedback
   const handleAnalysis = async () => {
-    let rank = 1;
-    for (const name in firebaseData) {
-      console.log(name);
+    setAnalysisLoading(true);
 
-      const feedbackArray = [];
-      if (name !== "Company") {
-        const feedbacks = firebaseData[name];
-        for (const key in feedbacks) {
-          const feedback = feedbacks[key];
-          if (feedback && feedback.feedback && feedback.date) {
-            feedbackArray.push(
-              `feedback: ${feedback.feedback} | date: ${feedback.date} ||`
-            );
-          }
-        }
-      }
-      //@ts-ignore
+    // @ts-ignore
+    if (firebaseData.length === 0) {
+      alert("Employee data not loaded. Try again later.");
+      return;
+    }
+    let employeeData = firebaseData;
+    // @ts-ignore
+    delete employeeData["Company"];
+    employeeData = extractFeedback(employeeData);
+    console.log(employeeData);
 
-      console.log(feedbackArray);
+    const openai = new OpenAI({
+      apiKey: import.meta.env.VITE_OPENAI_KEY,
+      dangerouslyAllowBrowser: true,
+    });
 
-      const openai = new OpenAI({
-        apiKey: import.meta.env.VITE_OPENAI_KEY,
-        dangerouslyAllowBrowser: true,
+    try {
+      const prompt = `Analyze the feedback and employees object and rank the employees based on their effort. Then, generate a list of 5 personality traits most appreciated by the employees.\n
+      Additionally, generate a short report about the employee that sums up his or her strengths and weaknesses. Here's an example: "Jason is a hardworking employee who has... However, he lacks in time management skills...".\n
+      Your response should be in a JSON format as such: {"keyTraits": [trait1, trait2], "ranking": [[employee1, shortReport], [employee2, shortReport]]}.\n
+      EmployeesFeedback = ${JSON.stringify(employeeData)}`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        temperature: 1,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
       });
 
+      const content = response.choices[0].message.content;
+      console.log(content);
       try {
-        const response = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "user",
-              content: `You are a LLM designed to identify a person's key characteristic.\n
-                Based on the feedback and time given, use one word to identify the characteristic of the individual that summarises his values and belief. Your response should only consist of one word with no punctuations. \n
-                [${feedbackArray.join("],[")}]`,
-            },
-          ],
-          temperature: 1,
-          max_tokens: 1000,
-          top_p: 1,
-          frequency_penalty: 0,
-          presence_penalty: 0,
-        });
-
-        //@ts-ignore
-        const content: string = response.choices[0].message.content;
-        console.log(content);
-        addEntryToDatabase(content, name, rank);
-        rank += 1;
-
-        // Uncomment this line to handle the result
-        // setKeyTrait(response.choices[0].message.content);
+        // @ts-ignore
+        const data = JSON.parse(content);
+        console.log(data);
+        addEntryToDatabase(data);
       } catch (error) {
         console.error("Error:", error);
-        // Handle any errors here
       }
+    } catch (error) {
+      console.error("Error:", error);
     }
+    setAnalysisLoading(false);
   };
 
   // Function to add a new trait to the Firebase Realtime Database
-  function addEntryToDatabase(newTrait: string, name: string, rank: number) {
+  function addEntryToDatabase(data: any) {
     try {
       const firebaseDatabaseUrl =
         "https://feedback-psa-default-rtdb.asia-southeast1.firebasedatabase.app/";
       const endpointPath = `personality/`; // Update with your specific path
+      axios.put(`${firebaseDatabaseUrl}${endpointPath}.json`, data);
 
-      // Fetch the current data from the database
-      const response = axios.get(`${firebaseDatabaseUrl}${endpointPath}.json`);
-      const currentData = response.data || {}; // If there's no data yet, initialize an empty object
+      setToggle(!toggle);
 
-      if (currentData[name]) {
-        // If it does, update the existing entry
-        currentData[name]["key_trait"] = newTrait;
-        currentData[name]["rank"] = rank;
-      } else {
-        // If not, create a new entry with a unique key using push()
-        currentData[name] = {
-          key_trait: newTrait,
-          rank: rank,
-        };
-      }
-
-      // Update the database with the new data
-      axios.put(`${firebaseDatabaseUrl}${endpointPath}.json`, currentData);
-
-      console.log("New entry added successfully:", newTrait);
+      // setFirebaseData(data.employees);
+      // setPersonalityData(data.personality);
     } catch (error) {
       console.error("Error adding entry:", error);
     }
+  }
+
+  function viewHandler(index: number) {
+    // @ts-ignore
+    const employee = personalityData.ranking[index];
+    console.log(employee);
+    setSelectedEmployee(employee);
+    setOpenModal(true);
   }
 
   return (
@@ -174,16 +186,7 @@ const AdminPage = () => {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Breadcrumbs
-              size="sm"
-              aria-label="breadcrumbs"
-              //   separator={
-              //     <ChevronRightRoundedIcon
-              //     // fontSize="sm"
-              //     />
-              //   }
-              sx={{ pl: 0 }}
-            >
+            <Breadcrumbs size="sm" aria-label="breadcrumbs" sx={{ pl: 0 }}>
               <Link
                 underline="none"
                 color="neutral"
@@ -217,6 +220,7 @@ const AdminPage = () => {
               Welcome Admin!
             </Typography>
             <Button
+              loading={analysisLoading}
               color="primary"
               startDecorator={<PsychologyIcon />}
               size="md"
@@ -240,9 +244,12 @@ const AdminPage = () => {
                 }}
               >
                 <Typography level="h3" textAlign={"center"}>
-                  Top Employees
+                  Employee leaderboards
                 </Typography>
-                <TopEmployeeTable personalityData={personalityData} />
+                <TopEmployeeTable
+                  personalityData={personalityData}
+                  viewHandler={viewHandler}
+                />
               </Sheet>
               <Box sx={{ display: "block", marginLeft: "auto", width: "40%" }}>
                 <Sheet
@@ -279,6 +286,79 @@ const AdminPage = () => {
           </Box>
         </Box>
       </Box>
+      <Modal
+        aria-labelledby="close-modal-title"
+        open={openModal}
+        onClose={() => {
+          setSelectedEmployee([]);
+          setOpenModal(false);
+        }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Sheet
+          variant="outlined"
+          sx={{
+            width: "70%",
+            maxHeight: "100%",
+            minHeight: "70%",
+            borderRadius: "md",
+            p: 4,
+          }}
+          style={{ overflow: "auto" }}
+        >
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+          >
+            {selectedEmployee.length !== 0 ? (
+              <>
+                <Typography
+                  component="h2"
+                  id="modal-description"
+                  level="h1"
+                  textColor="inherit"
+                  fontWeight="md"
+                  paddingBottom={2}
+                >
+                  {selectedEmployee[0]} Review
+                </Typography>
+                <ModalClose variant="outlined" />
+                <Typography
+                  id="modal-description"
+                  textColor="inherit"
+                  fontWeight="md"
+                  sx={{ whiteSpace: "pre-line" }}
+                >
+                  {/* @ts-ignore */}
+                  {selectedEmployee[1].split("\n").map((i, key) => {
+                    return <p key={key}>{i}</p>;
+                  })}
+                </Typography>
+              </>
+            ) : (
+              <Stack alignItems="center">
+                <CircularProgress sx={{ my: 3 }} size="md" />
+                <Typography
+                  // component="h2"
+                  id="modal-description"
+                  level="body-md"
+                  textColor="inherit"
+                  fontWeight="md"
+                  paddingTop={1}
+                >
+                  Generating Summary...
+                </Typography>
+              </Stack>
+            )}
+          </Stack>
+        </Sheet>
+      </Modal>
     </CssVarsProvider>
   );
 };
