@@ -16,7 +16,14 @@ import BlockIcon from "@mui/icons-material/Block";
 import axios from "axios";
 import { EditNote, Functions } from "@mui/icons-material";
 import OpenAI from "openai";
-import { CircularProgress, Stack } from "@mui/joy";
+import {
+  Autocomplete,
+  CircularProgress,
+  FormControl,
+  FormLabel,
+  Stack,
+  Textarea,
+} from "@mui/joy";
 
 function descendingComparator(a, b, orderBy) {
   const dateA = new Date(a[orderBy]);
@@ -30,13 +37,11 @@ function descendingComparator(a, b, orderBy) {
   }
   return 0;
 }
-
 function getComparator(order, orderBy) {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
-
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -51,11 +56,21 @@ function stableSort(array, comparator) {
 
 export default function OrderTable({ char }) {
   const [order, setOrder] = React.useState("desc");
-  const [openModal, setOpenModal] = React.useState(false);
-  const [openDetailsModal, setOpenDetailsModal] = React.useState(false);
   const [rows, setRows] = React.useState([]);
   const [response, setResponse] = React.useState("");
   const [details, setDetails] = React.useState("");
+  const [openModal, setOpenModal] = React.useState(false);
+  const [openDetailsModal, setOpenDetailsModal] = React.useState(false);
+  const [openFeedModal, setOpenFeedModal] = React.useState(false);
+  const [characters, setCharacters] = React.useState([]);
+  const [feedbackForm, setFeedbackForm] = React.useState({
+    customer: { email: "", initial: "", name: "" },
+    date: "",
+    feedback: "",
+    id: "",
+    status: "",
+    recipient: "",
+  });
 
   React.useEffect(() => {
     (async () => {
@@ -69,7 +84,7 @@ export default function OrderTable({ char }) {
           // Handle the response data here
           const data = response.data;
           console.log(Object.values(data));
-          setRows(Object.values(data));
+          setRows(data);
           return data;
         })
         .catch((error) => {
@@ -78,20 +93,148 @@ export default function OrderTable({ char }) {
         });
     })();
   }, [char]);
+  const [formLoading, setFormLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const tmp = ["Joshua", "Joseph"].filter(function (el) {
+      return el != char;
+    });
+    setFeedbackForm((prevState) => {
+      return {
+        ...prevState,
+        customer: { email: `${char}@gmail.com`, initial: char[0], name: char },
+        recipient: tmp[0],
+      };
+    });
+    setCharacters(tmp);
+  }, [char]);
+
+  const pushFire = (newEntry, id) => {
+    (async () => {
+      try {
+        console.log(newEntry.recipient);
+        const firebaseDatabaseUrl =
+          "https://feedback-psa-default-rtdb.asia-southeast1.firebasedatabase.app/";
+        const endpointPath = `employees/${newEntry.recipient}`;
+
+        // console.log(rows);
+
+        const response = await axios.get(
+          `${firebaseDatabaseUrl}${endpointPath}.json`
+        );
+
+        // let currentData = response.data || {};
+
+        let updatedRows = response.data;
+        updatedRows[id] = newEntry;
+
+        console.log(updatedRows);
+
+        await axios.put(
+          `${firebaseDatabaseUrl}${endpointPath}.json`,
+          updatedRows
+        );
+
+        console.log("New entry added successfully:", newEntry);
+        setFeedbackForm({
+          customer: {
+            email: `${char}@gmail.com`,
+            initial: char[0],
+            name: char,
+          },
+          recipient: characters[0],
+          date: "",
+          feedback: "",
+          id: "",
+          status: "",
+        });
+        setOpenFeedModal(false);
+      } catch (error) {
+        console.error("Error adding entry:", error);
+      }
+    })();
+  };
+
+  const handleFormSubmit = () => {
+    (async () => {
+      setFormLoading(true);
+      let formData = feedbackForm;
+      formData = {
+        ...formData,
+        date: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+        id: `FED-${Math.floor(Math.random() * 10000)}`,
+      };
+      console.log(formData);
+
+      if (formData.feedback.length !== 0) {
+        // TODO: HIDE THE ENV KEY WTF
+        const openai = new OpenAI({
+          apiKey: import.meta.env.VITE_OPENAI_KEY,
+          dangerouslyAllowBrowser: true,
+        });
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "user",
+              content: `Please help me analyse the feedback given: "${formData.feedback}". If it is a postive feedback, reply "Positive". Else, reply "Negative".`,
+            },
+          ],
+          temperature: 0.1,
+          max_tokens: 100,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+        });
+
+        console.log(response);
+        formData = {
+          ...formData,
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          id: `FED-${Math.floor(Math.random() * 10000)}`,
+          status: response.choices[0].message.content,
+        };
+        console.log(formData);
+
+        pushFire(formData, formData.id);
+      } else {
+        alert("You need to type in feedback.");
+      }
+      setFormLoading(false);
+    })();
+  };
 
   const handleSummarise = () => {
     (async () => {
       setOpenModal(true);
       // console.log(rows);
+
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
       const feedbackArray = [];
 
-      for (let i = 0; i < rows.length; i++) {
-        // console.log(rows[i]);
-        feedbackArray.push(rows[i].date + ": " + rows[i].feedback);
+      for (let i = 0; i < Object.keys(rows).length; i++) {
+        const values = Object.values(rows);
+
+        const date = new Date(values[i].date);
+
+        if (date > sixMonthsAgo) {
+          feedbackArray.push(values[i].date + ": " + values[i].feedback);
+        }
       }
 
       // sendAI(feedbackArray);
-      console.log(feedbackArray);
+      console.log("Feedback Array: ", feedbackArray);
 
       // TODO: HIDE THE ENV KEY WTF
       const openai = new OpenAI({
@@ -104,13 +247,13 @@ export default function OrderTable({ char }) {
         messages: [
           {
             role: "user",
-            content: `You are a LLM designed to review and summarise feedback. Act as if you were taking directly to the employee.\n
+            content: `You are a LLM designed to review and summarise feedback. Act as if you were taking face-to-face to the employee as a superior. Do not write it in the form of a letter.\n
             Based on the feedback and time given, judge the employee's progress. Tell them about the area they have improved in across time as well as the areas in which they remained lacking in. For the areas in which they are lacking, provide them with specific ways to improve.\n
-            Include a few fictatious courses the employee can attend to work on these skills. Bold the course names with html <b> tags. Encourage the user to ask their superiors for the chance to attend these courses.\n
+            Include a few courses the employee can attend to work on these skills. Encourage the user to ask their superiors for the chance to attend these courses.\n
             [${feedbackArray.join("],[")}]`,
           },
         ],
-        temperature: 1,
+        temperature: 0.3,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
@@ -124,11 +267,13 @@ export default function OrderTable({ char }) {
 
   const handleCreateFeedback = () => {
     // ERNEST LOOK HERE
+    setOpenFeedModal(true);
     console.log("create feedback");
   };
 
   const viewHandler = (id) => {
-    setDetails(rows.find((obj) => obj.id === id));
+    console.log(rows[id]);
+    setDetails(rows[id]);
     setOpenDetailsModal(true);
   };
 
@@ -138,6 +283,7 @@ export default function OrderTable({ char }) {
         sx={{
           display: "flex",
           my: 1,
+          marginBottom: 2,
           gap: 1,
           flexDirection: { xs: "column", sm: "row" },
           alignItems: { xs: "start", sm: "center" },
@@ -187,9 +333,9 @@ export default function OrderTable({ char }) {
         >
           <thead>
             <tr>
-              <th style={{ width: 20, padding: "12px 6px" }}> </th>
-              <th style={{ width: 40, padding: "12px 6px" }}>Review ID</th>
-              <th style={{ width: 40, padding: "12px 6px" }}>
+              <th style={{ width: 10, padding: "12px 6px" }}> </th>
+              <th style={{ width: 20, padding: "12px 6px" }}>Review ID</th>
+              <th style={{ width: 15, padding: "12px 6px" }}>
                 <Link
                   underline="none"
                   color="primary"
@@ -208,54 +354,68 @@ export default function OrderTable({ char }) {
                   Date
                 </Link>
               </th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
-              <th style={{ width: 40, padding: "12px 6px" }}> </th>
+              <th
+                style={{ width: 20, padding: "12px 6px", textAlign: "center" }}
+              >
+                Status
+              </th>
+              <th style={{ width: 120, padding: "12px 6px" }}>
+                Feedback Preview
+              </th>
+              <th style={{ width: 20, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
-            {stableSort(rows, getComparator(order, "date")).map((row) => (
-              <tr key={row.id}>
-                <td></td>
-                <td>
-                  <Typography level="body-xs">{row.id}</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.date}</Typography>
-                </td>
-                <td>
-                  <Chip
-                    variant="soft"
-                    size="sm"
-                    startDecorator={
-                      {
-                        Positive: <CheckRoundedIcon />,
-                        Negative: <BlockIcon />,
-                      }[row.status]
-                    }
-                    color={
-                      {
-                        Positive: "success",
-                        Negative: "danger",
-                      }[row.status]
-                    }
-                  >
-                    {row.status}
-                  </Chip>
-                </td>
-                <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Button
-                      height={"90%"}
-                      onClick={() => {
-                        viewHandler(row.id);
-                      }}
+            {stableSort(Object.values(rows), getComparator(order, "date")).map(
+              (row) => (
+                <tr key={row.id}>
+                  <td></td>
+                  <td>
+                    <Typography level="body-xs">{row.id}</Typography>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">{row.date}</Typography>
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <Chip
+                      variant="soft"
+                      size="sm"
+                      startDecorator={
+                        {
+                          Positive: <CheckRoundedIcon />,
+                          Negative: <BlockIcon />,
+                        }[row.status]
+                      }
+                      color={
+                        {
+                          Positive: "success",
+                          Negative: "danger",
+                        }[row.status]
+                      }
                     >
-                      View
-                    </Button>
-                  </Box>
-                </td>
-              </tr>
-            ))}
+                      {row.status}
+                    </Chip>
+                  </td>
+                  <td>
+                    <Typography noWrap level="body-xs">
+                      {row.feedback}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                      <Button
+                        height={"90%"}
+                        onClick={() => {
+                          viewHandler(row.id);
+                        }}
+                      >
+                        View
+                      </Button>
+                    </Box>
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </Table>
       </Sheet>
@@ -297,7 +457,7 @@ export default function OrderTable({ char }) {
               fontWeight="md"
               paddingBottom={2}
             >
-              Summary (Previous Year)
+              Summary (Past 6 months)
             </Typography>
             <ModalClose variant="outlined" />
             {response.length !== 0 ? (
@@ -394,6 +554,96 @@ export default function OrderTable({ char }) {
               <CircularProgress size="lg" />
             )}
           </Stack>
+        </Sheet>
+      </Modal>
+      <Modal
+        aria-labelledby="close-modal-title"
+        open={openFeedModal}
+        onClose={() => {
+          setFeedbackForm({
+            customer: {
+              email: `${char}@gmail.com`,
+              initial: char[0],
+              name: char,
+            },
+            recipient: characters[0],
+            date: "",
+            feedback: "",
+            id: "",
+            status: "",
+          });
+          setOpenFeedModal(false);
+        }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Sheet
+          variant="outlined"
+          sx={{
+            width: "70%",
+            height: "70%",
+            borderRadius: "md",
+            p: 4,
+          }}
+          style={{ overflow: "auto" }}
+        >
+          <ModalClose variant="outlined" />
+          <Typography
+            component="h2"
+            id="modal-description"
+            level="h1"
+            textColor="inherit"
+            fontWeight="md"
+            paddingBottom={2}
+          >
+            Send feedback
+          </Typography>
+          <FormControl id="controllable-states-demo">
+            <FormLabel>Sending feedback to:</FormLabel>
+            <Autocomplete
+              placeholder="..."
+              value={feedbackForm.recipient}
+              onChange={(event, newValue) => {
+                setFeedbackForm((prevState) => {
+                  return {
+                    ...prevState,
+                    recipient: newValue,
+                  };
+                });
+              }}
+              inputValue={feedbackForm.recipient}
+              onInputChange={(event, newInputValue) => {
+                setFeedbackForm((prevState) => {
+                  return {
+                    ...prevState,
+                    recipient: newInputValue,
+                  };
+                });
+              }}
+              options={characters}
+              sx={{ width: 300, marginBottom: 1 }}
+            />
+            <Textarea
+              sx={{ marginBottom: 2 }}
+              placeholder="Feedback goes here"
+              minRows={15}
+              value={feedbackForm.feedback}
+              onChange={(event) => {
+                setFeedbackForm((prevState) => {
+                  return {
+                    ...prevState,
+                    feedback: event.target.value,
+                  };
+                });
+              }}
+            />
+          </FormControl>
+          <Button loading={formLoading} onClick={handleFormSubmit}>
+            Submit
+          </Button>
         </Sheet>
       </Modal>
       <Box
