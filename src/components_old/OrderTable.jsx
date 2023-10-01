@@ -217,15 +217,24 @@ export default function OrderTable({ char }) {
     (async () => {
       setOpenModal(true);
       // console.log(rows);
+
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
       const feedbackArray = [];
 
-      for (let i = 0; i < rows.length; i++) {
-        // console.log(rows[i]);
-        feedbackArray.push(rows[i].date + ": " + rows[i].feedback);
+      for (let i = 0; i < Object.keys(rows).length; i++) {
+        const values = Object.values(rows);
+
+        const date = new Date(values[i].date);
+
+        if (date > sixMonthsAgo) {
+          feedbackArray.push(values[i].date + ": " + values[i].feedback);
+        }
       }
 
       // sendAI(feedbackArray);
-      console.log(feedbackArray);
+      console.log("Feedback Array: ", feedbackArray);
 
       // TODO: HIDE THE ENV KEY WTF
       const openai = new OpenAI({
@@ -238,13 +247,13 @@ export default function OrderTable({ char }) {
         messages: [
           {
             role: "user",
-            content: `You are a LLM designed to review and summarise feedback. Act as if you were taking directly to the employee.\n
+            content: `You are a LLM designed to review and summarise feedback. Act as if you were taking face-to-face to the employee as a superior. Do not write it in the form of a letter.\n
             Based on the feedback and time given, judge the employee's progress. Tell them about the area they have improved in across time as well as the areas in which they remained lacking in. For the areas in which they are lacking, provide them with specific ways to improve.\n
-            Include a few fictatious courses the employee can attend to work on these skills. Bold the course names with html <b> tags. Encourage the user to ask their superiors for the chance to attend these courses.\n
+            Include a few courses the employee can attend to work on these skills. Encourage the user to ask their superiors for the chance to attend these courses.\n
             [${feedbackArray.join("],[")}]`,
           },
         ],
-        temperature: 0.1,
+        temperature: 0.3,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 0,
@@ -436,7 +445,7 @@ export default function OrderTable({ char }) {
               fontWeight="md"
               paddingBottom={2}
             >
-              Summary (Previous Year)
+              Summary (Past 6 months)
             </Typography>
             <ModalClose variant="outlined" />
             {response.length !== 0 ? (
