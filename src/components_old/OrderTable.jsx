@@ -333,9 +333,9 @@ export default function OrderTable({ char }) {
         >
           <thead>
             <tr>
-              <th style={{ width: 20, padding: "12px 6px" }}> </th>
-              <th style={{ width: 40, padding: "12px 6px" }}>Review ID</th>
-              <th style={{ width: 40, padding: "12px 6px" }}>
+              <th style={{ width: 10, padding: "12px 6px" }}> </th>
+              <th style={{ width: 20, padding: "12px 6px" }}>Review ID</th>
+              <th style={{ width: 15, padding: "12px 6px" }}>
                 <Link
                   underline="none"
                   color="primary"
@@ -354,8 +354,15 @@ export default function OrderTable({ char }) {
                   Date
                 </Link>
               </th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Status</th>
-              <th style={{ width: 40, padding: "12px 6px" }}> </th>
+              <th
+                style={{ width: 20, padding: "12px 6px", textAlign: "center" }}
+              >
+                Status
+              </th>
+              <th style={{ width: 120, padding: "12px 6px" }}>
+                Feedback Preview
+              </th>
+              <th style={{ width: 20, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
@@ -369,7 +376,7 @@ export default function OrderTable({ char }) {
                   <td>
                     <Typography level="body-xs">{row.date}</Typography>
                   </td>
-                  <td>
+                  <td style={{ textAlign: "center" }}>
                     <Chip
                       variant="soft"
                       size="sm"
@@ -388,6 +395,11 @@ export default function OrderTable({ char }) {
                     >
                       {row.status}
                     </Chip>
+                  </td>
+                  <td>
+                    <Typography noWrap level="body-xs">
+                      {row.feedback}
+                    </Typography>
                   </td>
                   <td>
                     <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
