@@ -96,7 +96,9 @@ export default function OrderTable({ char }) {
   const [formLoading, setFormLoading] = React.useState(false);
 
   React.useEffect(() => {
-    const tmp = ["Joshua", "Joseph"].filter(function (el) {
+    const tmp = ["Joshua", "Joseph", "Katie", "Moses", "Ruby"].filter(function (
+      el
+    ) {
       return el != char;
     });
     setFeedbackForm((prevState) => {
@@ -151,6 +153,7 @@ export default function OrderTable({ char }) {
         setOpenFeedModal(false);
       } catch (error) {
         console.error("Error adding entry:", error);
+        alert("Please try again later.");
       }
     })();
   };
@@ -292,14 +295,47 @@ export default function OrderTable({ char }) {
         }}
       >
         <Typography level="h2">Welcome back, {char}</Typography>
-        <Button
-          color="primary"
-          startDecorator={<EditNote />}
-          size="md"
-          onClick={handleCreateFeedback}
-        >
-          Write a feedback!
-        </Button>
+        <Stack direction={"row"} gap={2}>
+          <Button
+            color="primary"
+            startDecorator={<EditNote />}
+            size="md"
+            onClick={() => {
+              const tmp = ["Joshua", "Joseph", "Katie", "Moses", "Ruby"].filter(
+                function (el) {
+                  return el != char;
+                }
+              );
+              setCharacters(tmp);
+              setFeedbackForm((prevState) => {
+                return {
+                  ...prevState,
+                  recipient: tmp[0],
+                };
+              });
+              handleCreateFeedback();
+            }}
+          >
+            Review your Peers!
+          </Button>
+          <Button
+            color="primary"
+            startDecorator={<EditNote />}
+            size="md"
+            onClick={() => {
+              setCharacters(["Company"]);
+              setFeedbackForm((prevState) => {
+                return {
+                  ...prevState,
+                  recipient: "Company",
+                };
+              });
+              handleCreateFeedback();
+            }}
+          >
+            PSA Feedback
+          </Button>
+        </Stack>
       </Box>
       <Sheet
         className="OrderTableContainer"
@@ -604,6 +640,8 @@ export default function OrderTable({ char }) {
           <FormControl id="controllable-states-demo">
             <FormLabel>Sending feedback to:</FormLabel>
             <Autocomplete
+              disabled={characters[0] == "Company"}
+              disableClearable={true}
               placeholder="..."
               value={feedbackForm.recipient}
               onChange={(event, newValue) => {
