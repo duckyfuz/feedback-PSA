@@ -25,6 +25,7 @@ import PsychologyIcon from "@mui/icons-material/Psychology";
 
 //components
 import TopEmployeeTable from "../adminPageComponents/TopEmployeeTable";
+// import AdminTable from "../adminPageComponents/AdminTable";
 
 const AdminPage = () => {
   const [firebaseData, setFirebaseData] = React.useState({});
@@ -369,6 +370,7 @@ const AdminPage = () => {
           </Stack>
         </Sheet>
       </Modal>
+      {/* <AdminTable /> */}
     </CssVarsProvider>
   );
 };
