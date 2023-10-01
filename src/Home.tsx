@@ -15,6 +15,9 @@ const Home = () => {
     if (param === "Employee") {
       navigate("/FeedbackPage");
     }
+    if (param === "Employer") {
+      navigate("/AdminPage");
+    }
   };
 
   return (
