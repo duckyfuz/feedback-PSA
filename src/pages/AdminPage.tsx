@@ -283,13 +283,14 @@ const AdminPage = () => {
                 <Sheet
                   sx={{
                     width: "100%", // Set width to 40% of parent element
-                    padding: 3, // Add some padding for content
                     borderRadius: "12px",
                     height: 210,
                     overflowX: "auto",
                   }}
                 >
-                  <Typography level="h3">Survey Results</Typography>
+                  <Typography level="h3" padding={2}>
+                    Survey Results
+                  </Typography>
                   <Table stickyHeader>
                     <thead>
                       <th style={{ width: "30px" }}>ID</th>
