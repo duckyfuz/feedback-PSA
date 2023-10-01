@@ -47,7 +47,7 @@ const AdminPage = () => {
           const data = response.data;
           setFirebaseData(data.employees);
           setPersonalityData(data.personality);
-          console.log(data.personality);
+          console.log(data.personality.keyTraits);
           return data;
         })
         .catch((error) => {
@@ -237,13 +237,14 @@ const AdminPage = () => {
               <Sheet
                 sx={{
                   width: "60%", // Set width to 40% of parent element
-                  padding: "16px", // Add some padding for content
+                  // padding: "16px", // Add some padding for content
                   borderRadius: "12px",
-                  height: 400,
+                  // height: 400,
                   mr: 5,
+                  p: 3,
                 }}
               >
-                <Typography level="h3" textAlign={"center"}>
+                <Typography level="h3" textAlign={"start"}>
                   Employee leaderboards
                 </Typography>
                 <TopEmployeeTable
@@ -255,24 +256,33 @@ const AdminPage = () => {
                 <Sheet
                   sx={{
                     width: "100%", // Set width to 40% of parent element
-                    padding: "16px", // Add some padding for content
+                    padding: 3, // Add some padding for content
                     borderRadius: "12px",
-                    height: 150,
                     mb: 5,
                   }}
                 >
-                  <Typography level="h3" textAlign={"center"}>
-                    Top Personality
+                  <Typography level="h3" textAlign={"start"}>
+                    Top Personalities
                   </Typography>
-
-                  <Typography level="h4" textAlign={"center"}>
-                    Kenneth
-                  </Typography>
+                  {Object.keys(personalityData).length !== 0 && (
+                    <ol>
+                      {/* @ts-ignore */}
+                      <li key={0}>{personalityData.keyTraits[0]}</li>
+                      {/* @ts-ignore */}
+                      <li key={0}>{personalityData.keyTraits[1]}</li>
+                      {/* @ts-ignore */}
+                      <li key={0}>{personalityData.keyTraits[2]}</li>
+                      {/* @ts-ignore */}
+                      <li key={0}>{personalityData.keyTraits[3]}</li>
+                      {/* @ts-ignore */}
+                      <li key={0}>{personalityData.keyTraits[4]}</li>
+                    </ol>
+                  )}
                 </Sheet>
-                <Sheet
+                {/* <Sheet
                   sx={{
                     width: "100%", // Set width to 40% of parent element
-                    padding: "16px", // Add some padding for content
+                    padding: 3, // Add some padding for content
                     borderRadius: "12px",
                     height: 210,
                   }}
@@ -280,7 +290,7 @@ const AdminPage = () => {
                   <Typography level="h3">
                     Bi-Annual Survey Feedback Results
                   </Typography>
-                </Sheet>
+                </Sheet> */}
               </Box>
             </Box>
           </Box>
