@@ -96,7 +96,9 @@ export default function OrderTable({ char }) {
   const [formLoading, setFormLoading] = React.useState(false);
 
   React.useEffect(() => {
-    const tmp = ["Joshua", "Joseph"].filter(function (el) {
+    const tmp = ["Joshua", "Joseph", "Katie", "Moses", "Ruby"].filter(function (
+      el
+    ) {
       return el != char;
     });
     setFeedbackForm((prevState) => {
@@ -299,9 +301,11 @@ export default function OrderTable({ char }) {
             startDecorator={<EditNote />}
             size="md"
             onClick={() => {
-              const tmp = ["Joshua", "Joseph"].filter(function (el) {
-                return el != char;
-              });
+              const tmp = ["Joshua", "Joseph", "Katie", "Moses", "Ruby"].filter(
+                function (el) {
+                  return el != char;
+                }
+              );
               setCharacters(tmp);
               setFeedbackForm((prevState) => {
                 return {

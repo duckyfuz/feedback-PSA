@@ -84,6 +84,9 @@ export default function FeedbackView() {
               <Select defaultValue="Joshua" onChange={handleCharChange}>
                 <Option value="Joshua">Joshua</Option>
                 <Option value="Joseph">Joseph</Option>
+                <Option value="Katie">Katie</Option>
+                <Option value="Moses">Moses</Option>
+                <Option value="Ruby">Ruby</Option>
               </Select>
             </Breadcrumbs>
             <ColorSchemeToggle
