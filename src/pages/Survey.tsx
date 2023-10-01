@@ -4,6 +4,7 @@ import Typography from "@mui/joy/Typography";
 import Slider from "@mui/joy/Slider";
 import Button from "@mui/joy/Button";
 import { CssVarsProvider, Input } from "@mui/joy";
+import axios from "axios";
 
 const Survey: React.FC = () => {
   const [openEnded1, setOpenEnded1] = useState("");
@@ -15,6 +16,32 @@ const Survey: React.FC = () => {
     // Add logic to handle the submission of survey data
     // Add the survey data into database
     //return to the home page
+
+    const id = `SUR-${Math.floor(Math.random() * 10000)}`;
+
+    const surveyData = {
+      [id]: {
+        role_satisfactory_level: slider1,
+        role_suggestion: openEnded1,
+        wlb_satisfactory_level: slider2,
+        wlb_suggestion: openEnded2,
+      },
+    };
+    console.log(surveyData);
+
+    //Add survey data into firebase
+    try {
+      const firebaseDatabaseUrl =
+        "https://feedback-psa-default-rtdb.asia-southeast1.firebasedatabase.app/";
+      const endpointPath = `survey/`; // Update with your specific path
+      axios.put(`${firebaseDatabaseUrl}${endpointPath}.json`, surveyData);
+      // setFirebaseData(data.employees);
+      // setPersonalityData(data.personality);
+    } catch (error) {
+      console.error("Error adding entry:", error);
+    }
+    //Close the survey tab
+    window.location.reload();
   };
 
   return (

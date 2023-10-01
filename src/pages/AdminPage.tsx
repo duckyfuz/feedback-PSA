@@ -25,6 +25,7 @@ import PsychologyIcon from "@mui/icons-material/Psychology";
 
 //components
 import TopEmployeeTable from "../adminPageComponents/TopEmployeeTable";
+import Table from "@mui/joy/Table";
 // import AdminTable from "../adminPageComponents/AdminTable";
 
 const AdminPage = () => {
@@ -182,7 +183,6 @@ const AdminPage = () => {
             display: "flex",
             flexDirection: "column",
             minWidth: 0,
-            height: "100dvh",
             gap: 1,
           }}
         >
@@ -280,18 +280,51 @@ const AdminPage = () => {
                     </ol>
                   )}
                 </Sheet>
-                {/* <Sheet
+                <Sheet
                   sx={{
                     width: "100%", // Set width to 40% of parent element
                     padding: 3, // Add some padding for content
                     borderRadius: "12px",
                     height: 210,
+                    overflowX: "auto",
                   }}
                 >
-                  <Typography level="h3">
-                    Bi-Annual Survey Feedback Results
-                  </Typography>
-                </Sheet> */}
+                  <Typography level="h3">Survey Results</Typography>
+                  <Table stickyHeader>
+                    <thead>
+                      <th style={{ width: "30px" }}>ID</th>
+                      <th style={{ width: "60px" }}>Role Rating</th>
+                      <th style={{ width: "60px" }}>WLB Rating</th>
+                      <th style={{ width: "30px" }}>View </th>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>SUR-123</td>
+                        <td>7/10</td>
+                        <td>6/10</td>
+                        <td>
+                          <Button>View</Button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>SUR-123</td>
+                        <td>7/10</td>
+                        <td>6/10</td>
+                        <td>
+                          <Button>View</Button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>SUR-123</td>
+                        <td>7/10</td>
+                        <td>6/10</td>
+                        <td>
+                          <Button>View</Button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Sheet>
               </Box>
             </Box>
           </Box>
