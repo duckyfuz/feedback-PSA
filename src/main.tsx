@@ -6,6 +6,8 @@ import Home from "./Home";
 import FeedbackPage from "./pages/FeedbackPage";
 import GiveFeedbackPage from "./pages/GiveFeedbackPage";
 
+import AdminPage from "./pages/AdminPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -18,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/GiveFeedbackPage",
     element: <GiveFeedbackPage />,
+  },
+  {
+    path: "/AdminPage",
+    element: <AdminPage />,
   },
 ]);
 
