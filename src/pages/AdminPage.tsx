@@ -19,8 +19,12 @@ import Header from "../components_old/Header";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 
+//components
+import TopEmployeeTable from "../adminPageComponents/TopEmployeeTable";
+
 const AdminPage = () => {
   const [firebaseData, setFirebaseData] = React.useState({});
+  const [personalityData, setPersonalityData] = React.useState({});
 
   React.useEffect(() => {
     (async () => {
@@ -34,7 +38,8 @@ const AdminPage = () => {
           const data = response.data;
           // @ts-ignore
           setFirebaseData(Object.values(data)[0]);
-          console.log(firebaseData);
+          // @ts-ignore
+          setPersonalityData(Object.values(data)[1]);
           //   setRows(Object.values(data));
           return data;
         })
@@ -47,20 +52,23 @@ const AdminPage = () => {
 
   //Function that assesses the characteristic of an individual based on his/her feedback
   const handleAnalysis = async () => {
+    let rank = 1;
     for (const name in firebaseData) {
       console.log(name);
 
       const feedbackArray = [];
-      //@ts-ignore
-      const feedbacks = firebaseData[name];
-      for (const key in feedbacks) {
-        const feedback = feedbacks[key];
-        if (feedback && feedback.feedback && feedback.date) {
-          feedbackArray.push(
-            `feedback: ${feedback.feedback} | date: ${feedback.date} ||`
-          );
+      if (name !== "Company") {
+        const feedbacks = firebaseData[name];
+        for (const key in feedbacks) {
+          const feedback = feedbacks[key];
+          if (feedback && feedback.feedback && feedback.date) {
+            feedbackArray.push(
+              `feedback: ${feedback.feedback} | date: ${feedback.date} ||`
+            );
+          }
         }
       }
+      //@ts-ignore
 
       console.log(feedbackArray);
 
@@ -75,8 +83,8 @@ const AdminPage = () => {
           messages: [
             {
               role: "user",
-              content: `You are a LLM designed to identify a person's key trait.\n
-                Based on the feedback and time given, use one word to identify the trait of the individual that summarises his values and belief. Your response should only consist of one word with no punctuations. \n
+              content: `You are a LLM designed to identify a person's key characteristic.\n
+                Based on the feedback and time given, use one word to identify the characteristic of the individual that summarises his values and belief. Your response should only consist of one word with no punctuations. \n
                 [${feedbackArray.join("],[")}]`,
             },
           ],
@@ -89,7 +97,9 @@ const AdminPage = () => {
 
         //@ts-ignore
         const content: string = response.choices[0].message.content;
-        addEntryToDatabase(content, name);
+        console.log(content);
+        addEntryToDatabase(content, name, rank);
+        rank += 1;
 
         // Uncomment this line to handle the result
         // setKeyTrait(response.choices[0].message.content);
@@ -101,26 +111,30 @@ const AdminPage = () => {
   };
 
   // Function to add a new trait to the Firebase Realtime Database
-  async function addEntryToDatabase(newTrait: string, name: string) {
+  function addEntryToDatabase(newTrait: string, name: string, rank: number) {
     try {
       const firebaseDatabaseUrl =
         "https://feedback-psa-default-rtdb.asia-southeast1.firebasedatabase.app/";
-      const endpointPath = `employees/${name}`; // Update with your specific path
+      const endpointPath = `personality/`; // Update with your specific path
 
       // Fetch the current data from the database
-      const response = await axios.get(
-        `${firebaseDatabaseUrl}${endpointPath}.json`
-      );
+      const response = axios.get(`${firebaseDatabaseUrl}${endpointPath}.json`);
       const currentData = response.data || {}; // If there's no data yet, initialize an empty object
 
-      // Create the new entry with the generated key
-      currentData["PersonalityType"] = newTrait;
+      if (currentData[name]) {
+        // If it does, update the existing entry
+        currentData[name]["key_trait"] = newTrait;
+        currentData[name]["rank"] = rank;
+      } else {
+        // If not, create a new entry with a unique key using push()
+        currentData[name] = {
+          key_trait: newTrait,
+          rank: rank,
+        };
+      }
 
       // Update the database with the new data
-      await axios.put(
-        `${firebaseDatabaseUrl}${endpointPath}.json`,
-        currentData
-      );
+      axios.put(`${firebaseDatabaseUrl}${endpointPath}.json`, currentData);
 
       console.log("New entry added successfully:", newTrait);
     } catch (error) {
@@ -206,7 +220,7 @@ const AdminPage = () => {
               color="primary"
               startDecorator={<PsychologyIcon />}
               size="md"
-              //   onClick={handleCreateFeedback}
+              onClick={handleAnalysis}
             >
               Reanalyse feedback!
             </Button>
@@ -225,9 +239,10 @@ const AdminPage = () => {
                   mr: 5,
                 }}
               >
-                <Typography level="h3">
-                  Top Employee (Table of top employee and their personality)
+                <Typography level="h3" textAlign={"center"}>
+                  Top Employees
                 </Typography>
+                <TopEmployeeTable personalityData={personalityData} />
               </Sheet>
               <Box sx={{ display: "block", marginLeft: "auto", width: "40%" }}>
                 <Sheet
@@ -239,7 +254,13 @@ const AdminPage = () => {
                     mb: 5,
                   }}
                 >
-                  <Typography level="h3">Top Personality</Typography>
+                  <Typography level="h3" textAlign={"center"}>
+                    Top Personality
+                  </Typography>
+
+                  <Typography level="h4" textAlign={"center"}>
+                    Kenneth
+                  </Typography>
                 </Sheet>
                 <Sheet
                   sx={{
