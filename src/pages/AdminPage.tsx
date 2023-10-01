@@ -96,8 +96,8 @@ const AdminPage = () => {
 
     try {
       const prompt = `Analyze the feedback and employees object and rank the employees based on their effort. Then, generate a list of 5 personality traits most appreciated by the employees.\n
-      Additionally, generate a short report about the employee that sums up his or her strengths and weaknesses. Here's an example: "Jason is a hardworking employee who has... However, he lacks in time management skills...".\n
-      Your response should be in a JSON format as such: {"keyTraits": [trait1, trait2], "ranking": [[employee1, shortReport], [employee2, shortReport]]}.\n
+      Additionally, generate a report about the employee that sums up his or her strengths and weaknesses. Here's an example: "Jason is a hardworking employee who has... However, he lacks in time management skills...".\n
+      Your response should be in a JSON format as such: {"keyTraits": [trait1, trait2], "ranking": [[employee1, report], [employee2, shortReport]]}.\n
       EmployeesFeedback = ${JSON.stringify(employeeData)}`;
 
       const response = await openai.chat.completions.create({
