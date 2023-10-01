@@ -33,7 +33,7 @@ const AdminPage = () => {
       console.log(name);
 
       const feedbackArray = [];
-
+      //@ts-ignore
       const feedbacks = firebaseData[name];
       for (const key in feedbacks) {
         const feedback = feedbacks[key];
@@ -69,8 +69,9 @@ const AdminPage = () => {
           presence_penalty: 0,
         });
 
-        console.log(response.choices[0].message.content);
-        addEntryToDatabase(response.choices[0].message.content, name);
+        //@ts-ignore
+        const content: string = response.choices[0].message.content;
+        addEntryToDatabase(content, name);
 
         // Uncomment this line to handle the result
         // setKeyTrait(response.choices[0].message.content);
@@ -109,7 +110,13 @@ const AdminPage = () => {
     }
   }
 
-  return <button onClick={handleAnalysis}>Analysis</button>;
+  return (
+    <div>
+      <button onClick={handleAnalysis}>Analysis</button>
+      <button onClick={handleAllPersonality}> Show All Personality</button>
+      <p></p>
+    </div>
+  );
 };
 
 export default AdminPage;
